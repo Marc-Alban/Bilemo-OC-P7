@@ -6,9 +6,21 @@ use App\Repository\ResellerRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use ApiPlatform\Core\Annotation\ApiResource;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass=ResellerRepository::class)
+ * @ApiResource()
+ * @UniqueEntity(
+ *     fields={"email"},
+ *     message="Il existe déjà un customer avec cette email: '{{ value }}' ! "
+ * )
+ * @UniqueEntity(
+ *     fields={"name"},
+ *     message="Il existe déjà un customer avec ce nom: '{{ value }}' ! "
+ * )
  */
 class Reseller
 {
@@ -21,16 +33,37 @@ class Reseller
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Assert\NotBlank()
+     * @Assert\NotNull()
+     * @Assert\Length(
+     *     min=3,
+     *     max=15,
+     *     minMessage="Le nom doit contenir au minimum '{{ limit }}' caractères",
+     *     maxMessage="Le nom doit contenir au maximum '{{ limit }}' caractères"
+     * )
+     * @Assert\NotBlank()
+     * @Assert\NotNull()
      */
     private string $name;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Assert\Regex(
+     *     pattern="/^[a-zA-Z_.-]+@[a-zA-Z-]+\.[a-zA-Z-.]+$/",
+     *     match=true,
+     *     message="L'email doit être au format: test@live.fr …"
+     * )
      */
     private string $email;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Assert\NotBlank()
+     * @Assert\Regex(
+     *     pattern="/^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*\W).{6,}$/",
+     *     message="mot de passe non valide, doit contenir la lettre majuscule et le numéro et les lettres "
+     * )
+     * @Assert\Length(min="5", max="20")
      */
     private string $password;
 
@@ -41,6 +74,8 @@ class Reseller
 
     /**
      * @ORM\Column(type="array")
+     * @Assert\NotBlank()
+     * @Assert\NotNull()
      */
     private array $roles = [];
 
