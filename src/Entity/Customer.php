@@ -10,7 +10,40 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass=CustomerRepository::class)
- * @ApiResource()
+ * @ApiResource(
+ *     collectionOperations = {
+ *          "get_list_customers" = {
+ *              "method" = "GET",
+ *              "path" = "/customers",
+ *          },
+ *          "post_created_customer" = {
+ *              "method" = "POST",
+ *              "path" = "/customers",
+ *          },
+ *    },
+ *    itemOperations = {
+ *          "get_customers" = {
+ *              "method" = "GET",
+ *              "path" = "/customers/{id}",
+ *              "requirements" = {"id" = "\d+"},
+ *          },
+            "put_customers" = {
+ *              "method" = "PUT",
+ *              "path" = "/customers/{id}",
+ *              "requirements" = {"id" = "\d+"},
+ *          },
+ *          "patch_customers" = {
+ *              "method" = "PATCH",
+ *              "path" = "/customers/{id}",
+ *              "requirements" = {"id" = "\d+"},
+ *          },
+ *          "delete_customers" = {
+ *              "method" = "DELETE",
+ *              "path" = "/customers/{id}",
+ *              "requirements" = {"id" = "\d+"},
+ *          },
+ *     }
+ * )
  * @UniqueEntity(
  *     fields={"email"},
  *     message="Il existe déjà un customer avec cette email: {{ value }} ! "

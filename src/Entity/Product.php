@@ -10,7 +10,21 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass=ProductRepository::class)
- * @ApiResource()
+ * @ApiResource(
+ *     collectionOperations={
+ *         "get_list_products"={
+ *             "method"="GET",
+ *             "path"="/products",
+ *          }
+ *     },
+ *     itemOperations={
+ *          "get_products"={
+ *              "method"="GET",
+ *              "path"="/products/{id}",
+ *              "requirements"={"id" = "\d+"},
+ *          },
+ *      },
+ * )
  */
 class Product
 {

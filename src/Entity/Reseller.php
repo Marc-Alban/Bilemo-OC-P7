@@ -2,9 +2,9 @@
 
 namespace App\Entity;
 
-use App\Repository\ResellerRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use App\Repository\ResellerRepository;
 use Doctrine\ORM\Mapping as ORM;
 use ApiPlatform\Core\Annotation\ApiResource;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
@@ -12,7 +12,15 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass=ResellerRepository::class)
- * @ApiResource()
+ * @ApiResource(
+ *     collectionOperations={
+ *         "post_created_resellers"={
+ *             "method"="POST",
+ *             "path"="/resellers",
+ *          }
+ *     },
+ *     itemOperations={},
+ * )
  * @UniqueEntity(
  *     fields={"email"},
  *     message="Il existe déjà un customer avec cette email: '{{ value }}' ! "
