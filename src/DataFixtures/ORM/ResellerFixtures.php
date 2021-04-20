@@ -27,28 +27,36 @@ class ResellerFixtures extends Fixture
         $reseller0 = new Reseller();
         $reseller0->setName("SFR")
             ->setEmail(strtolower($this->faker->firstName($genre[mt_rand(0,1)])."@".$reseller0->getName()."com"))
-            ->setPassword($this->passwordEncoder->encodePassword($reseller0,"resellSfr"));
+            ->setPassword($this->passwordEncoder->encodePassword($reseller0,"resellSfr"))
+            ->setRoles(['ROLE_RESELLER'])
+        ;
         $manager->persist($reseller0);
         $manager->flush();
 
         $reseller1 = new Reseller();
         $reseller1->setName("Bouygue")
             ->setEmail(strtolower($this->faker->firstName($genre[mt_rand(0,1)])."@".$reseller1->getName()."com"))
-            ->setPassword($this->passwordEncoder->encodePassword($reseller1,"resellBouygue"));
+            ->setPassword($this->passwordEncoder->encodePassword($reseller1,"resellBouygue"))
+            ->setRoles(['ROLE_RESELLER'])
+        ;
         $manager->persist($reseller1);
         $manager->flush();
 
         $reseller2 = new Reseller();
         $reseller2->setName("Orange")
             ->setEmail(strtolower($this->faker->firstName($genre[mt_rand(0,1)])."@".$reseller2->getName()."com"))
-            ->setPassword($this->passwordEncoder->encodePassword($reseller2,"resellOrange"));
+            ->setPassword($this->passwordEncoder->encodePassword($reseller2,"resellOrange"))
+            ->setRoles(['ROLE_RESELLER'])
+        ;
         $manager->persist($reseller2);
         $manager->flush();
 
         $reseller3 = new Reseller();
         $reseller3->setName("Free")
             ->setEmail(strtolower($this->faker->firstName($genre[mt_rand(0,1)])."@".$reseller3->getName()."com"))
-            ->setPassword($this->passwordEncoder->encodePassword($reseller3,"resellFree"));
+            ->setPassword($this->passwordEncoder->encodePassword($reseller3,"resellFree"))
+            ->setRoles(['ROLE_RESELLER'])
+        ;
         $manager->persist($reseller3);
         $manager->flush();
 

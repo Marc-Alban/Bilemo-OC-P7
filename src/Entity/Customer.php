@@ -121,6 +121,7 @@ class Customer implements UserInterface
      */
     private \DateTimeInterface $created_at;
 
+
     /**
      * @ORM\ManyToOne(targetEntity=Reseller::class, inversedBy="customers")
      */

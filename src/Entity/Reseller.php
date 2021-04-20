@@ -7,6 +7,7 @@ use Doctrine\Common\Collections\Collection;
 use App\Repository\ResellerRepository;
 use Doctrine\ORM\Mapping as ORM;
 use ApiPlatform\Core\Annotation\ApiResource;
+use phpDocumentor\Reflection\Types\Self_;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -33,6 +34,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  */
 class Reseller implements UserInterface
 {
+
     /**
      * @ORM\Id
      * @ORM\GeneratedValue
@@ -81,16 +83,23 @@ class Reseller implements UserInterface
      */
     private \DateTimeInterface $created_at;
 
+    /**
+     * @ORM\Column(type="array", length=255, nullable=true)
+     */
+    private array $roles;
+
 
     /**
      * @ORM\OneToMany(targetEntity=Customer::class, mappedBy="resellers")
      */
     private Collection $customers;
 
+
     public function __construct()
     {
         $this->created_at = new \DateTime();
         $this->customers = new ArrayCollection();
+        $this->roles = ['ROLE_RESELLER'];
     }
 
     public function getId(): ?int
@@ -179,7 +188,13 @@ class Reseller implements UserInterface
 
     public function getRoles(): array
     {
-        return ["ROLE_RESELLER"];
+        return $this->roles;
+    }
+
+    public function setRoles(array $roles): self
+    {
+       $this->roles = $roles;
+       return $this;
     }
 
 
