@@ -6,6 +6,7 @@ use App\Repository\CustomerRepository;
 use Doctrine\ORM\Mapping as ORM;
 use ApiPlatform\Core\Annotation\ApiResource;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
@@ -57,7 +58,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  *     message="Il existe déjà un customer avec ce prénom: {{ value }} ! "
  * )
  */
-class Customer
+class Customer implements UserInterface
 {
     /**
      * @ORM\Id
@@ -124,6 +125,12 @@ class Customer
      * @ORM\ManyToOne(targetEntity=Reseller::class, inversedBy="customers")
      */
     private Reseller $resellers;
+
+    public function __construct()
+    {
+        $this->created_at = new \DateTime();
+    }
+
 
     public function getId(): int
     {
@@ -200,5 +207,28 @@ class Customer
         $this->resellers = $resellers;
 
         return $this;
+    }
+
+
+    public function getRoles(): array
+    {
+        return ['ROLE_USER'];
+    }
+
+
+    public function getSalt(): ?string
+    {
+        return null;
+    }
+
+
+    public function getUsername(): ?string
+    {
+        return $this->email;
+    }
+
+    public function eraseCredentials(): void
+    {
+
     }
 }

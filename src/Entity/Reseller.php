@@ -8,6 +8,7 @@ use App\Repository\ResellerRepository;
 use Doctrine\ORM\Mapping as ORM;
 use ApiPlatform\Core\Annotation\ApiResource;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
@@ -30,7 +31,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  *     message="Il existe déjà un customer avec ce nom: '{{ value }}' ! "
  * )
  */
-class Reseller
+class Reseller implements UserInterface
 {
     /**
      * @ORM\Id
@@ -80,12 +81,6 @@ class Reseller
      */
     private \DateTimeInterface $created_at;
 
-    /**
-     * @ORM\Column(type="array")
-     * @Assert\NotBlank()
-     * @Assert\NotNull()
-     */
-    private array $roles = [];
 
     /**
      * @ORM\OneToMany(targetEntity=Customer::class, mappedBy="resellers")
@@ -94,6 +89,7 @@ class Reseller
 
     public function __construct()
     {
+        $this->created_at = new \DateTime();
         $this->customers = new ArrayCollection();
     }
 
@@ -150,17 +146,6 @@ class Reseller
         return $this;
     }
 
-    public function getRoles(): array
-    {
-        return $this->roles;
-    }
-
-    public function setRoles(array $roles): self
-    {
-        $this->roles = $roles;
-
-        return $this;
-    }
 
     /**
      * @return Collection|Customer[]
@@ -190,5 +175,27 @@ class Reseller
         }
 
         return $this;
+    }
+
+    public function getRoles(): array
+    {
+        return ["ROLE_RESELLER"];
+    }
+
+
+    public function getSalt(): ?string
+    {
+        return null;
+    }
+
+
+    public function getUsername(): ?string
+    {
+        return $this->email;
+    }
+
+    public function eraseCredentials(): void
+    {
+
     }
 }

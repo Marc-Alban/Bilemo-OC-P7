@@ -3,10 +3,10 @@ security:
     providers:
         chain_provider:
             chain:
-                providers: [reseller_db, customer_db]
-        customer_db:
+                providers: [reseller, customer]
+        customer:
             entity: {class: App\Entity\Customer, property: email}
-        reseller_db:
+        reseller:
             entity: {class: App\Entity\Reseller, property: email}
 
     encoders:

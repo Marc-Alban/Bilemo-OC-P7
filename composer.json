@@ -13,7 +13,6 @@
         "doctrine/doctrine-bundle": "^2.3",
         "doctrine/doctrine-migrations-bundle": "^3.1",
         "doctrine/orm": "^2.8",
-        "fakerphp/faker": "^1.14",
         "lexik/jwt-authentication-bundle": "^2.11",
         "nelmio/cors-bundle": "^2.1",
         "phpdocumentor/reflection-docblock": "^5.2",
@@ -77,6 +76,7 @@
     },
     "require-dev": {
         "doctrine/doctrine-fixtures-bundle": "^3.4",
+        "fakerphp/faker": "^1.14",
         "phpstan/phpstan": "^0.12.83",
         "squizlabs/php_codesniffer": "^3.6",
         "symfony/browser-kit": "^5.2",
