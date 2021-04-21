@@ -14,13 +14,13 @@ use Symfony\Component\Validator\Constraints as Assert;
  *     collectionOperations={
  *         "get_list_products"={
  *             "method"="GET",
- *             "path"="/products",
+ *             "path"="/api/products",
  *          }
  *     },
  *     itemOperations={
  *          "get_products"={
  *              "method"="GET",
- *              "path"="/products/{id}",
+ *              "path"="/api/products/{id}",
  *              "requirements"={"id" = "\d+"},
  *          },
  *      },

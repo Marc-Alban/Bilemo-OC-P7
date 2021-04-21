@@ -15,32 +15,32 @@ use Symfony\Component\Validator\Constraints as Assert;
  *     collectionOperations = {
  *          "get_list_customers" = {
  *              "method" = "GET",
- *              "path" = "/customers",
+ *              "path" = "/api/customers",
  *          },
  *          "post_created_customer" = {
  *              "method" = "POST",
- *              "path" = "/customers",
+ *              "path" = "/api/customers",
  *          },
  *    },
  *    itemOperations = {
  *          "get_customers" = {
  *              "method" = "GET",
- *              "path" = "/customers/{id}",
+ *              "path" = "/api/customers/{id}",
  *              "requirements" = {"id" = "\d+"},
  *          },
             "put_customers" = {
  *              "method" = "PUT",
- *              "path" = "/customers/{id}",
+ *              "path" = "/api/customers/{id}",
  *              "requirements" = {"id" = "\d+"},
  *          },
  *          "patch_customers" = {
  *              "method" = "PATCH",
- *              "path" = "/customers/{id}",
+ *              "path" = "/api/customers/{id}",
  *              "requirements" = {"id" = "\d+"},
  *          },
  *          "delete_customers" = {
  *              "method" = "DELETE",
- *              "path" = "/customers/{id}",
+ *              "path" = "/api/customers/{id}",
  *              "requirements" = {"id" = "\d+"},
  *          },
  *     }
@@ -230,6 +230,5 @@ class Customer implements UserInterface
 
     public function eraseCredentials(): void
     {
-
     }
 }

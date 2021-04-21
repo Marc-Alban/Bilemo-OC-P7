@@ -18,8 +18,8 @@ use Symfony\Component\Validator\Constraints as Assert;
  *     collectionOperations={
  *         "post_created_resellers"={
  *             "method"="POST",
- *             "path"="/resellers",
- *          }
+ *             "path"="/api/register",
+ *          },
  *     },
  *     itemOperations={},
  * )
@@ -193,8 +193,8 @@ class Reseller implements UserInterface
 
     public function setRoles(array $roles): self
     {
-       $this->roles = $roles;
-       return $this;
+        $this->roles = $roles;
+        return $this;
     }
 
 
@@ -211,6 +211,5 @@ class Reseller implements UserInterface
 
     public function eraseCredentials(): void
     {
-
     }
 }

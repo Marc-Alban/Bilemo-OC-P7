@@ -13,7 +13,7 @@ use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 class CustomerFixtures extends Fixture implements DependentFixtureInterface
 {
     private \Faker\Generator $faker;
-    private ObjectManager$manager;
+    private ObjectManager $manager;
     private UserPasswordEncoderInterface $passwordEncoder;
     public function __construct(UserPasswordEncoderInterface $passwordEncoder)
     {
@@ -30,15 +30,15 @@ class CustomerFixtures extends Fixture implements DependentFixtureInterface
     public function loadCustomer()
     {
         $genre = ["male","female"];
-        for ($i=0;$i<3;$i++){
-            $max = mt_rand(0,25);
-            for($j=0;$j<$max;$j++){
+        for ($i = 0; $i < 3; $i++) {
+            $max = mt_rand(0, 25);
+            for ($j = 0; $j < $max; $j++) {
                 $customer = new Customer();
-                $customer->setName($this->faker->firstName($genre[mt_rand(0,1)]))
+                $customer->setName($this->faker->firstName($genre[mt_rand(0, 1)]))
                     ->setLastName($this->faker->Name())
-                    ->setEmail(strtolower($customer->getName())."@gmail.com")
-                    ->setPassword($this->passwordEncoder->encodePassword($customer,$customer->getName()))
-                    ->setResellers($this->getReference('reseller'.$i));
+                    ->setEmail(strtolower($customer->getName()) . "@gmail.com")
+                    ->setPassword($this->passwordEncoder->encodePassword($customer, $customer->getName()))
+                    ->setResellers($this->getReference('reseller' . $i));
                 $this->manager->persist($customer);
             }
         }
@@ -51,6 +51,4 @@ class CustomerFixtures extends Fixture implements DependentFixtureInterface
             ResellerFixtures::class
         );
     }
-
-
 }
