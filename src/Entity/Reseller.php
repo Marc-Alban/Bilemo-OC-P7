@@ -9,6 +9,7 @@ use Doctrine\ORM\Mapping as ORM;
 use ApiPlatform\Core\Annotation\ApiResource;
 use phpDocumentor\Reflection\Types\Self_;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -29,7 +30,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  * )
  * @UniqueEntity(
  *     fields={"name"},
- *     message="Il existe déjà un customer avec ce nom: '{{ value }}' ! "
+ *     message="Il existe déjà un customer avec ce nom: {{ value }} ! "
  * )
  */
 class Reseller implements UserInterface
@@ -47,18 +48,18 @@ class Reseller implements UserInterface
      * @Assert\NotBlank()
      * @Assert\NotNull()
      * @Assert\Length(
-     *     min=3,
-     *     max=15,
+     *     min=5,
+     *     max=30,
      *     minMessage="Le nom doit contenir au minimum '{{ limit }}' caractères",
      *     maxMessage="Le nom doit contenir au maximum '{{ limit }}' caractères"
      * )
-     * @Assert\NotBlank()
-     * @Assert\NotNull()
      */
     private string $name;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Assert\NotBlank()
+     * @Assert\NotNull()
      * @Assert\Regex(
      *     pattern="/^[a-zA-Z_.-]+@[a-zA-Z-]+\.[a-zA-Z-.]+$/",
      *     match=true,
@@ -74,7 +75,12 @@ class Reseller implements UserInterface
      *     pattern="/^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*\W).{6,}$/",
      *     message="mot de passe non valide, doit contenir la lettre majuscule et le numéro et les lettres "
      * )
-     * @Assert\Length(min="5", max="20")
+     * @Assert\Length(
+     *     min=5,
+     *     max=30,
+     *     minMessage="Le password doit contenir au minimum '{{ limit }}' caractères",
+     *     maxMessage="Le password doit contenir au maximum '{{ limit }}' caractères"
+     * )
      */
     private string $password;
 
@@ -88,6 +94,8 @@ class Reseller implements UserInterface
      */
     private array $roles;
 
+    private UserPasswordEncoderInterface $passwordEncoder;
+
 
     /**
      * @ORM\OneToMany(targetEntity=Customer::class, mappedBy="resellers")
@@ -95,11 +103,12 @@ class Reseller implements UserInterface
     private Collection $customers;
 
 
-    public function __construct()
+    public function __construct(UserPasswordEncoderInterface $passwordEncoder)
     {
+        $this->passwordEncoder = $passwordEncoder;
         $this->created_at = new \DateTime();
         $this->customers = new ArrayCollection();
-        $this->roles = ['ROLE_RESELLER'];
+        $this->setRoles(['ROLE_RESELLER']);
     }
 
     public function getId(): ?int
@@ -138,8 +147,7 @@ class Reseller implements UserInterface
 
     public function setPassword(string $password): self
     {
-        $this->password = $password;
-
+        $this->password = $this->passwordEncoder->encodePassword($this, $password);
         return $this;
     }
 

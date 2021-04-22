@@ -6,6 +6,7 @@ use App\Repository\CustomerRepository;
 use Doctrine\ORM\Mapping as ORM;
 use ApiPlatform\Core\Annotation\ApiResource;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -27,6 +28,8 @@ use Symfony\Component\Validator\Constraints as Assert;
  *              "method" = "GET",
  *              "path" = "/api/customers/{id}",
  *              "requirements" = {"id" = "\d+"},
+ *              "acces_control" = "is_granted('ROLE_RESSELER')",
+ *              ""
  *          },
             "put_customers" = {
  *              "method" = "PUT",
@@ -97,6 +100,8 @@ class Customer implements UserInterface
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Assert\NotBlank()
+     * @Assert\NotNull()
      * @Assert\Regex(
      *     pattern="/^[a-zA-Z_.-]+@[a-zA-Z-]+\.[a-zA-Z-.]+$/",
      *     match=true,
@@ -108,6 +113,7 @@ class Customer implements UserInterface
     /**
      * @ORM\Column(type="string", length=255)
      * @Assert\NotBlank()
+     * @Assert\NotNull()
      * @Assert\Regex(
      *     pattern="/^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*\W).{6,}$/",
      *     message="mot de passe non valide, doit contenir la lettre majuscule et le numéro et les lettres "
@@ -127,8 +133,11 @@ class Customer implements UserInterface
      */
     private Reseller $resellers;
 
-    public function __construct()
+    private UserPasswordEncoderInterface $passwordEncoder;
+
+    public function __construct(UserPasswordEncoderInterface $passwordEncoder)
     {
+        $this->passwordEncoder = $passwordEncoder;
         $this->created_at = new \DateTime();
     }
 
@@ -181,7 +190,7 @@ class Customer implements UserInterface
 
     public function setPassword(string $password): self
     {
-        $this->password = $password;
+        $this->password = $this->passwordEncoder->encodePassword($this, $password);
 
         return $this;
     }

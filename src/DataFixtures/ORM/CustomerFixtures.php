@@ -33,7 +33,7 @@ class CustomerFixtures extends Fixture implements DependentFixtureInterface
         for ($i = 0; $i < 3; $i++) {
             $max = mt_rand(0, 25);
             for ($j = 0; $j < $max; $j++) {
-                $customer = new Customer();
+                $customer = new Customer($this->passwordEncoder);
                 $customer->setName($this->faker->firstName($genre[mt_rand(0, 1)]))
                     ->setLastName($this->faker->Name())
                     ->setEmail(strtolower($customer->getName()) . "@gmail.com")

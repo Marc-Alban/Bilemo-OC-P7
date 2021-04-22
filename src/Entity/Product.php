@@ -37,11 +37,22 @@ class Product
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Assert\NotBlank()
+     * @Assert\NotNull()
+     * @Assert\Length(
+     *     max=30,
+     *     maxMessage="Le nom doit contenir au maximum '{{ limit }}' caractères"
+     * )
      */
     private string $name;
 
     /**
      * @ORM\Column(type="integer")
+     * @Assert\NotBlank()
+     * @Assert\Type(
+     *     type="integer",
+     *     message="le prix {{ value }} n'est pas valide, il doit être du type {{ type }}."
+     * )
      */
     private int $price;
 
