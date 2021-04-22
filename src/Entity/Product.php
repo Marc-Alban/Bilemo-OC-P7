@@ -10,7 +10,21 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass=ProductRepository::class)
- * @ApiResource()
+ * @ApiResource(
+ *     collectionOperations={
+ *         "get_list_products"={
+ *             "method"="GET",
+ *             "path"="/api/products",
+ *          }
+ *     },
+ *     itemOperations={
+ *          "get_products"={
+ *              "method"="GET",
+ *              "path"="/api/products/{id}",
+ *              "requirements"={"id" = "\d+"},
+ *          },
+ *      },
+ * )
  */
 class Product
 {
@@ -23,11 +37,22 @@ class Product
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Assert\NotBlank()
+     * @Assert\NotNull()
+     * @Assert\Length(
+     *     max=30,
+     *     maxMessage="Le nom doit contenir au maximum '{{ limit }}' caractères"
+     * )
      */
     private string $name;
 
     /**
      * @ORM\Column(type="integer")
+     * @Assert\NotBlank()
+     * @Assert\Type(
+     *     type="integer",
+     *     message="le prix {{ value }} n'est pas valide, il doit être du type {{ type }}."
+     * )
      */
     private int $price;
 
@@ -55,6 +80,12 @@ class Product
      * @ORM\Column(type="datetime", nullable=true)
      */
     private ?\DateTimeInterface $updated_at;
+
+    public function __construct()
+    {
+        $this->created_at = new \DateTime();
+        $this->updated_at = new \DateTime();
+    }
 
     public function getId(): int
     {

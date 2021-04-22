@@ -6,11 +6,48 @@ use App\Repository\CustomerRepository;
 use Doctrine\ORM\Mapping as ORM;
 use ApiPlatform\Core\Annotation\ApiResource;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
+use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass=CustomerRepository::class)
- * @ApiResource()
+ * @ApiResource(
+ *     collectionOperations = {
+ *          "get_list_customers" = {
+ *              "method" = "GET",
+ *              "path" = "/api/customers",
+ *          },
+ *          "post_created_customer" = {
+ *              "method" = "POST",
+ *              "path" = "/api/customers",
+ *          },
+ *    },
+ *    itemOperations = {
+ *          "get_customers" = {
+ *              "method" = "GET",
+ *              "path" = "/api/customers/{id}",
+ *              "requirements" = {"id" = "\d+"},
+ *              "acces_control" = "is_granted('ROLE_RESSELER')",
+ *              ""
+ *          },
+            "put_customers" = {
+ *              "method" = "PUT",
+ *              "path" = "/api/customers/{id}",
+ *              "requirements" = {"id" = "\d+"},
+ *          },
+ *          "patch_customers" = {
+ *              "method" = "PATCH",
+ *              "path" = "/api/customers/{id}",
+ *              "requirements" = {"id" = "\d+"},
+ *          },
+ *          "delete_customers" = {
+ *              "method" = "DELETE",
+ *              "path" = "/api/customers/{id}",
+ *              "requirements" = {"id" = "\d+"},
+ *          },
+ *     }
+ * )
  * @UniqueEntity(
  *     fields={"email"},
  *     message="Il existe déjà un customer avec cette email: {{ value }} ! "
@@ -24,7 +61,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  *     message="Il existe déjà un customer avec ce prénom: {{ value }} ! "
  * )
  */
-class Customer
+class Customer implements UserInterface
 {
     /**
      * @ORM\Id
@@ -63,6 +100,8 @@ class Customer
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Assert\NotBlank()
+     * @Assert\NotNull()
      * @Assert\Regex(
      *     pattern="/^[a-zA-Z_.-]+@[a-zA-Z-]+\.[a-zA-Z-.]+$/",
      *     match=true,
@@ -74,6 +113,7 @@ class Customer
     /**
      * @ORM\Column(type="string", length=255)
      * @Assert\NotBlank()
+     * @Assert\NotNull()
      * @Assert\Regex(
      *     pattern="/^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*\W).{6,}$/",
      *     message="mot de passe non valide, doit contenir la lettre majuscule et le numéro et les lettres "
@@ -87,10 +127,20 @@ class Customer
      */
     private \DateTimeInterface $created_at;
 
+
     /**
      * @ORM\ManyToOne(targetEntity=Reseller::class, inversedBy="customers")
      */
     private Reseller $resellers;
+
+    private UserPasswordEncoderInterface $passwordEncoder;
+
+    public function __construct(UserPasswordEncoderInterface $passwordEncoder)
+    {
+        $this->passwordEncoder = $passwordEncoder;
+        $this->created_at = new \DateTime();
+    }
+
 
     public function getId(): int
     {
@@ -140,7 +190,7 @@ class Customer
 
     public function setPassword(string $password): self
     {
-        $this->password = $password;
+        $this->password = $this->passwordEncoder->encodePassword($this, $password);
 
         return $this;
     }
@@ -167,5 +217,27 @@ class Customer
         $this->resellers = $resellers;
 
         return $this;
+    }
+
+
+    public function getRoles(): array
+    {
+        return ['ROLE_USER'];
+    }
+
+
+    public function getSalt(): ?string
+    {
+        return null;
+    }
+
+
+    public function getUsername(): ?string
+    {
+        return $this->email;
+    }
+
+    public function eraseCredentials(): void
+    {
     }
 }

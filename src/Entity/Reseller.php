@@ -2,28 +2,40 @@
 
 namespace App\Entity;
 
-use App\Repository\ResellerRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use App\Repository\ResellerRepository;
 use Doctrine\ORM\Mapping as ORM;
 use ApiPlatform\Core\Annotation\ApiResource;
+use phpDocumentor\Reflection\Types\Self_;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
+use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass=ResellerRepository::class)
- * @ApiResource()
+ * @ApiResource(
+ *     collectionOperations={
+ *         "post_created_resellers"={
+ *             "method"="POST",
+ *             "path"="/api/register",
+ *          },
+ *     },
+ *     itemOperations={},
+ * )
  * @UniqueEntity(
  *     fields={"email"},
  *     message="Il existe déjà un customer avec cette email: '{{ value }}' ! "
  * )
  * @UniqueEntity(
  *     fields={"name"},
- *     message="Il existe déjà un customer avec ce nom: '{{ value }}' ! "
+ *     message="Il existe déjà un customer avec ce nom: {{ value }} ! "
  * )
  */
-class Reseller
+class Reseller implements UserInterface
 {
+
     /**
      * @ORM\Id
      * @ORM\GeneratedValue
@@ -36,18 +48,18 @@ class Reseller
      * @Assert\NotBlank()
      * @Assert\NotNull()
      * @Assert\Length(
-     *     min=3,
-     *     max=15,
+     *     min=5,
+     *     max=30,
      *     minMessage="Le nom doit contenir au minimum '{{ limit }}' caractères",
      *     maxMessage="Le nom doit contenir au maximum '{{ limit }}' caractères"
      * )
-     * @Assert\NotBlank()
-     * @Assert\NotNull()
      */
     private string $name;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Assert\NotBlank()
+     * @Assert\NotNull()
      * @Assert\Regex(
      *     pattern="/^[a-zA-Z_.-]+@[a-zA-Z-]+\.[a-zA-Z-.]+$/",
      *     match=true,
@@ -63,7 +75,12 @@ class Reseller
      *     pattern="/^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*\W).{6,}$/",
      *     message="mot de passe non valide, doit contenir la lettre majuscule et le numéro et les lettres "
      * )
-     * @Assert\Length(min="5", max="20")
+     * @Assert\Length(
+     *     min=5,
+     *     max=30,
+     *     minMessage="Le password doit contenir au minimum '{{ limit }}' caractères",
+     *     maxMessage="Le password doit contenir au maximum '{{ limit }}' caractères"
+     * )
      */
     private string $password;
 
@@ -73,20 +90,25 @@ class Reseller
     private \DateTimeInterface $created_at;
 
     /**
-     * @ORM\Column(type="array")
-     * @Assert\NotBlank()
-     * @Assert\NotNull()
+     * @ORM\Column(type="array", length=255, nullable=true)
      */
-    private array $roles = [];
+    private array $roles;
+
+    private UserPasswordEncoderInterface $passwordEncoder;
+
 
     /**
      * @ORM\OneToMany(targetEntity=Customer::class, mappedBy="resellers")
      */
     private Collection $customers;
 
-    public function __construct()
+
+    public function __construct(UserPasswordEncoderInterface $passwordEncoder)
     {
+        $this->passwordEncoder = $passwordEncoder;
+        $this->created_at = new \DateTime();
         $this->customers = new ArrayCollection();
+        $this->setRoles(['ROLE_RESELLER']);
     }
 
     public function getId(): ?int
@@ -125,8 +147,7 @@ class Reseller
 
     public function setPassword(string $password): self
     {
-        $this->password = $password;
-
+        $this->password = $this->passwordEncoder->encodePassword($this, $password);
         return $this;
     }
 
@@ -142,17 +163,6 @@ class Reseller
         return $this;
     }
 
-    public function getRoles(): array
-    {
-        return $this->roles;
-    }
-
-    public function setRoles(array $roles): self
-    {
-        $this->roles = $roles;
-
-        return $this;
-    }
 
     /**
      * @return Collection|Customer[]
@@ -182,5 +192,32 @@ class Reseller
         }
 
         return $this;
+    }
+
+    public function getRoles(): array
+    {
+        return $this->roles;
+    }
+
+    public function setRoles(array $roles): self
+    {
+        $this->roles = $roles;
+        return $this;
+    }
+
+
+    public function getSalt(): ?string
+    {
+        return null;
+    }
+
+
+    public function getUsername(): ?string
+    {
+        return $this->email;
+    }
+
+    public function eraseCredentials(): void
+    {
     }
 }
