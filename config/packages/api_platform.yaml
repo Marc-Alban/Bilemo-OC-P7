@@ -11,7 +11,10 @@ api_platform:
     patch_formats:
         json: ['application/merge-patch+json']
     swagger:
-        versions: [3]
+        api_keys:
+            apiKey:
+                name: Authorization
+                type: header
     formats:
         jsonld:                        ['application/ld+json']
         jsonhal:                       ['application/hal+json']
@@ -24,4 +27,5 @@ api_platform:
     error_formats:
         jsonproblem:                   ['application/problem+json']
         jsonld:                        ['application/ld+json']
+
 

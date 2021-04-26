@@ -19,8 +19,14 @@ use Symfony\Component\Serializer\Annotation\Groups;
  *         "post_created_resellers"=
  *          {
  *             "method"="POST",
- *             "path"="/api/register",
+ *             "path"="/auth/register",
  *             "controller"=App\Controller\Api\CreatedRegister::class
+ *          },
+ *         "post_login_resellers"=
+ *          {
+ *             "method"="POST",
+ *             "path"="/auth/login",
+ *             "openapi_context"="To connect a reseller"
  *          },
  *     },
  *     itemOperations={},

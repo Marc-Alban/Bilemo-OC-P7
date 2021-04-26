@@ -13,7 +13,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
  *     collectionOperations={
  *         "get_list_products"={
  *             "method"="GET",
- *             "path"="/api/products",
+ *             "path"="/products",
  *              "normalizationContext" = {
  *                  "groups"={
  *                      "read:Product:collection"
@@ -24,7 +24,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
  *     itemOperations={
  *          "get_products"={
  *              "method"="GET",
- *              "path"="/api/products/{id}",
+ *              "path"="/products/{id}",
  *              "requirements"={"id" = "\d+"},
  *              "normalizationContext" = {
  *                  "groups"={

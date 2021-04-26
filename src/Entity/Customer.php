@@ -18,7 +18,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
  *     collectionOperations = {
  *          "get_list_customers" = {
  *              "method" = "GET",
- *              "path" = "/api/customers",
+ *              "path" = "/customers",
  *              "normalizationContext" = {
  *                  "groups"={
  *                      "read:Customer:collection"
@@ -27,7 +27,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
  *          },
  *          "post_created_customer" = {
  *              "method" = "POST",
- *              "path" = "/api/customers",
+ *              "path" = "/customers",
  *              "denormalizationContext" = {
  *                  "groups"={
  *                      "post:Customer:collection"
@@ -38,7 +38,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
  *    itemOperations = {
  *          "get_customers" = {
  *              "method" = "GET",
- *              "path" = "/api/customers/{id}",
+ *              "path" = "/customers/{id}",
  *              "normalizationContext" = {
  *                  "groups"={
  *                      "read:Customer:item"
@@ -49,7 +49,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
  *          },
             "put_customers" = {
  *              "method" = "PUT",
- *              "path" = "/api/customers/{id}",
+ *              "path" = "/customers/{id}",
  *              "denormalizationContext" = {
  *                  "groups"={
  *                      "put:Customer:item"
@@ -59,7 +59,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
  *          },
  *          "delete_customers" = {
  *              "method" = "DELETE",
- *              "path" = "/api/customers/{id}",
+ *              "path" = "/customers/{id}",
  *              "requirements" = {"id" = "\d+"},
  *          },
  *     }

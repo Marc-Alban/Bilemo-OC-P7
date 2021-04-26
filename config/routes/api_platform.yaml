@@ -1,4 +1,13 @@
 api_platform:
     resource: .
     type: api_platform
-    prefix: /
+    prefix: /api
+
+app_swagger_ui:
+    path: /api/docs
+    methods: GET
+    defaults: { _controller: api_platform.swagger.action.ui, area: default }
+
+api_login:
+    path: /api/auth/login
+    methods: ['POST']
