@@ -7,19 +7,20 @@ use Doctrine\Common\Collections\Collection;
 use App\Repository\ResellerRepository;
 use Doctrine\ORM\Mapping as ORM;
 use ApiPlatform\Core\Annotation\ApiResource;
-use phpDocumentor\Reflection\Types\Self_;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
-use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
  * @ORM\Entity(repositoryClass=ResellerRepository::class)
  * @ApiResource(
  *     collectionOperations={
- *         "post_created_resellers"={
+ *         "post_created_resellers"=
+ *          {
  *             "method"="POST",
  *             "path"="/api/register",
+ *             "controller"=App\Controller\Api\CreatedRegister::class
  *          },
  *     },
  *     itemOperations={},
@@ -45,7 +46,6 @@ class Reseller implements UserInterface
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Assert\NotBlank()
      * @Assert\NotNull()
      * @Assert\Length(
      *     min=5,
@@ -58,7 +58,6 @@ class Reseller implements UserInterface
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Assert\NotBlank()
      * @Assert\NotNull()
      * @Assert\Regex(
      *     pattern="/^[a-zA-Z_.-]+@[a-zA-Z-]+\.[a-zA-Z-.]+$/",
@@ -70,7 +69,7 @@ class Reseller implements UserInterface
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Assert\NotBlank()
+     * @Assert\NotNull()
      * @Assert\Regex(
      *     pattern="/^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*\W).{6,}$/",
      *     message="mot de passe non valide, doit contenir la lettre majuscule et le numéro et les lettres "
@@ -94,8 +93,6 @@ class Reseller implements UserInterface
      */
     private array $roles;
 
-    private UserPasswordEncoderInterface $passwordEncoder;
-
 
     /**
      * @ORM\OneToMany(targetEntity=Customer::class, mappedBy="resellers")
@@ -103,9 +100,8 @@ class Reseller implements UserInterface
     private Collection $customers;
 
 
-    public function __construct(UserPasswordEncoderInterface $passwordEncoder)
+    public function __construct()
     {
-        $this->passwordEncoder = $passwordEncoder;
         $this->created_at = new \DateTime();
         $this->customers = new ArrayCollection();
         $this->setRoles(['ROLE_RESELLER']);
@@ -147,7 +143,7 @@ class Reseller implements UserInterface
 
     public function setPassword(string $password): self
     {
-        $this->password = $this->passwordEncoder->encodePassword($this, $password);
+        $this->password = $password;
         return $this;
     }
 

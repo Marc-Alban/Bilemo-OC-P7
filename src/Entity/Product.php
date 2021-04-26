@@ -5,9 +5,8 @@ namespace App\Entity;
 use App\Repository\ProductRepository;
 use Doctrine\ORM\Mapping as ORM;
 use ApiPlatform\Core\Annotation\ApiResource;
-use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Validator\Constraints as Assert;
-
+use Symfony\Component\Serializer\Annotation\Groups;
 /**
  * @ORM\Entity(repositoryClass=ProductRepository::class)
  * @ApiResource(
@@ -15,6 +14,11 @@ use Symfony\Component\Validator\Constraints as Assert;
  *         "get_list_products"={
  *             "method"="GET",
  *             "path"="/api/products",
+ *              "normalizationContext" = {
+ *                  "groups"={
+ *                      "read:Product:collection"
+ *                      }
+ *              },
  *          }
  *     },
  *     itemOperations={
@@ -22,6 +26,11 @@ use Symfony\Component\Validator\Constraints as Assert;
  *              "method"="GET",
  *              "path"="/api/products/{id}",
  *              "requirements"={"id" = "\d+"},
+ *              "normalizationContext" = {
+ *                  "groups"={
+ *                      "read:Customer:item"
+ *                      }
+ *              },
  *          },
  *      },
  * )
@@ -32,52 +41,59 @@ class Product
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
+     * @Groups({"read:Product:collection"})
      */
     private int $id;
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Assert\NotBlank()
      * @Assert\NotNull()
      * @Assert\Length(
      *     max=30,
      *     maxMessage="Le nom doit contenir au maximum '{{ limit }}' caractères"
      * )
+     * @Groups({"read:Product:item","read:Product:collection"})
      */
     private string $name;
 
     /**
      * @ORM\Column(type="integer")
-     * @Assert\NotBlank()
+     * @Assert\NotNull()
      * @Assert\Type(
      *     type="integer",
      *     message="le prix {{ value }} n'est pas valide, il doit être du type {{ type }}."
      * )
+     * @Groups({"read:Product:item","read:Product:collection"})
      */
     private int $price;
 
     /**
      * @ORM\Column(type="text")
+     * @Groups({"read:Product:item"})
      */
     private string $description;
 
     /**
      * @ORM\Column(type="array")
+     * @Groups({"read:Product:item","read:Product:collection"})
      */
     private array $category = [];
 
     /**
      * @ORM\Column(type="array", nullable=true)
+     * @Groups({"read:Product:item"})
      */
     private ?array $propertys = [];
 
     /**
      * @ORM\Column(type="datetime")
+     * @Groups({"read:Product:item"})
      */
     private \DateTimeInterface $created_at;
 
     /**
      * @ORM\Column(type="datetime", nullable=true)
+     * @Groups({"read:Product:item"})
      */
     private ?\DateTimeInterface $updated_at;
 

@@ -9,6 +9,8 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\Serializer\Annotation\Groups;
+
 
 /**
  * @ORM\Entity(repositoryClass=CustomerRepository::class)
@@ -17,28 +19,42 @@ use Symfony\Component\Validator\Constraints as Assert;
  *          "get_list_customers" = {
  *              "method" = "GET",
  *              "path" = "/api/customers",
+ *              "normalizationContext" = {
+ *                  "groups"={
+ *                      "read:Customer:collection"
+ *                      }
+ *              },
  *          },
  *          "post_created_customer" = {
  *              "method" = "POST",
  *              "path" = "/api/customers",
+ *              "denormalizationContext" = {
+ *                  "groups"={
+ *                      "post:Customer:collection"
+ *                   }
+ *              },
  *          },
  *    },
  *    itemOperations = {
  *          "get_customers" = {
  *              "method" = "GET",
  *              "path" = "/api/customers/{id}",
+ *              "normalizationContext" = {
+ *                  "groups"={
+ *                      "read:Customer:item"
+ *                      }
+ *              },
  *              "requirements" = {"id" = "\d+"},
- *              "acces_control" = "is_granted('ROLE_RESSELER')",
- *              ""
+ *              "acces_control" = "is_granted('ROLE_RESSELER')"
  *          },
             "put_customers" = {
  *              "method" = "PUT",
  *              "path" = "/api/customers/{id}",
- *              "requirements" = {"id" = "\d+"},
- *          },
- *          "patch_customers" = {
- *              "method" = "PATCH",
- *              "path" = "/api/customers/{id}",
+ *              "denormalizationContext" = {
+ *                  "groups"={
+ *                      "put:Customer:item"
+ *                      }
+ *              },
  *              "requirements" = {"id" = "\d+"},
  *          },
  *          "delete_customers" = {
@@ -67,12 +83,12 @@ class Customer implements UserInterface
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
+     * @Groups({"read:Customer:item"})
      */
     private int $id;
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Assert\NotBlank()
      * @Assert\NotNull()
      * @Assert\Length(
      *     min=3,
@@ -80,8 +96,7 @@ class Customer implements UserInterface
      *     minMessage="Le nom doit contenir au minimum {{ limit }} caractères",
      *     maxMessage="Le nom doit contenir au maximum {{ limit }} caractères"
      * )
-     * @Assert\NotBlank()
-     * @Assert\NotNull()
+     * @Groups({"read:Customer:collection","post:Customer:collection","put:Customer:item","read:Customer:item"})
      */
     private string $name;
 
@@ -93,37 +108,38 @@ class Customer implements UserInterface
      *     minMessage="Le prénom doit contenir au minimum {{ limit }} caractères",
      *     maxMessage="Le prénom doit contenir au maximum {{ limit }} caractères"
      * )
-     * @Assert\NotBlank()
      * @Assert\NotNull()
+     * @Groups({"read:Customer:collection","post:Customer:collection","put:Customer:item","read:Customer:item"})
      */
     private string $last_name;
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Assert\NotBlank()
      * @Assert\NotNull()
      * @Assert\Regex(
      *     pattern="/^[a-zA-Z_.-]+@[a-zA-Z-]+\.[a-zA-Z-.]+$/",
      *     match=true,
      *     message="L'email doit être au format: test@live.fr …"
      * )
+     * @Groups({"read:Customer:collection","post:Customer:collection","put:Customer:item","read:Customer:item"})
      */
     private string $email;
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Assert\NotBlank()
      * @Assert\NotNull()
      * @Assert\Regex(
      *     pattern="/^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*\W).{6,}$/",
      *     message="mot de passe non valide, doit contenir la lettre majuscule et le numéro et les lettres "
      * )
      * @Assert\Length(min="5", max="20")
+     * @Groups({"put:Customer:item","post:Customer:collection"})
      */
     private string $password;
 
     /**
      * @ORM\Column(type="datetime")
+     * @Groups({"put:Customer:item","read:Customer:item"})
      */
     private \DateTimeInterface $created_at;
 
