@@ -20,13 +20,58 @@ use Symfony\Component\Serializer\Annotation\Groups;
  *          {
  *             "method"="POST",
  *             "path"="/auth/register",
- *             "controller"=App\Controller\Api\CreatedRegister::class
+ *             "controller"=App\Controller\Api\CreatedRegister::class,
+ *             "openapi_context"={
+ *                  "summary" = "Create a reseller",
+ *                  "description" = "Create reseller with datas",
+ *                   "requestBody" = {
+ *                       "content" = {
+ *                           "application/json" = {
+ *                               "schema"  = {
+ *                                   "type"       = "object",
+ *                                   "properties" =
+ *                                       {
+ *                                       "name"        = {"type" = "string"},
+ *                                       "email"        = {"type" = "string"},
+ *                                       "password" = {"type" = "string"},
+ *                                       },
+ *                                },
+ *                               "example" = {
+ *                                   "name"        = "name",
+ *                                   "email"        = "reseller@orange.fr",
+ *                                   "password" = "123@..text",
+ *                               },
+ *                           },
+ *                       },
+ *                   },
+ *              },
  *          },
  *         "post_login_resellers"=
  *          {
  *             "method"="POST",
  *             "path"="/auth/login",
- *             "openapi_context"="To connect a reseller"
+ *             "openapi_context"={
+ *                  "summary" = "To connect a reseller",
+ *                  "description" = "Get a token for connect a reseller",
+ *                   "requestBody" = {
+ *                       "content" = {
+ *                           "application/json" = {
+ *                               "schema"  = {
+ *                                   "type"       = "object",
+ *                                   "properties" =
+ *                                       {
+ *                                       "email"        = {"type" = "string"},
+ *                                       "password" = {"type" = "string"},
+ *                                       },
+ *                                },
+ *                               "example" = {
+ *                                   "email"        = "reseller@orange.fr",
+ *                                   "password" = "123@..text",
+ *                               },
+ *                           },
+ *                       },
+ *                   },
+ *              },
  *          },
  *     },
  *     itemOperations={},
@@ -40,6 +85,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
  *     message="Il existe déjà un customer avec ce nom: {{ value }} ! "
  * )
  */
+
 class Reseller implements UserInterface
 {
 
@@ -59,6 +105,7 @@ class Reseller implements UserInterface
      *     minMessage="Le nom doit contenir au minimum '{{ limit }}' caractères",
      *     maxMessage="Le nom doit contenir au maximum '{{ limit }}' caractères"
      * )
+     * @Groups({"register:Reseller:collection"})
      */
     private string $name;
 
@@ -70,6 +117,7 @@ class Reseller implements UserInterface
      *     match=true,
      *     message="L'email doit être au format: test@live.fr …"
      * )
+     * @Groups({"register:Reseller:collection","login:Reseller:collection"})
      */
     private string $email;
 
@@ -86,6 +134,7 @@ class Reseller implements UserInterface
      *     minMessage="Le password doit contenir au minimum '{{ limit }}' caractères",
      *     maxMessage="Le password doit contenir au maximum '{{ limit }}' caractères"
      * )
+     * @Groups({"register:Reseller:collection","login:Reseller:collection"})
      */
     private string $password;
 
