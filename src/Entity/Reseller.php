@@ -11,6 +11,7 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Serializer\Annotation\Groups;
+use ApiPlatform\Core\Action\NotFoundAction;
 
 /**
  * @ORM\Entity(repositoryClass=ResellerRepository::class)
@@ -73,8 +74,49 @@ use Symfony\Component\Serializer\Annotation\Groups;
  *                   },
  *              },
  *          },
+ *          "get" = {
+ *              "controller" = NotFoundAction::class,
+ *              "read" = false,
+ *              "output" = false,
+ *          "openapi_context"={
+ *                  "summary" = "hidden",
+ *              },
+ *          },
  *     },
- *     itemOperations={},
+ *     itemOperations={
+ *          "get" = {
+ *              "controller" = NotFoundAction::class,
+ *              "read" = false,
+ *              "output" = false,
+  *          "openapi_context"={
+ *                  "summary" = "hidden",
+ *              },
+ *          },
+ *          "put" = {
+ *              "controller" = NotFoundAction::class,
+ *              "read" = false,
+ *              "output" = false,
+  *          "openapi_context"={
+ *                  "summary" = "hidden",
+ *              },
+ *          },
+ *          "patch" = {
+ *              "controller" = NotFoundAction::class,
+ *              "read" = false,
+ *              "output" = false,
+  *          "openapi_context"={
+ *                  "summary" = "hidden",
+ *              },
+ *          },
+ *          "delete" = {
+ *              "controller" = NotFoundAction::class,
+ *              "read" = false,
+ *              "output" = false,
+  *          "openapi_context"={
+ *                  "summary" = "hidden",
+ *              },
+ *          },
+ *     },
  * )
  * @UniqueEntity(
  *     fields={"email"},
@@ -152,7 +194,7 @@ class Reseller implements UserInterface
     /**
      * @ORM\OneToMany(targetEntity=Customer::class, mappedBy="resellers")
      */
-    private Collection $customers;
+    private ?Collection $customers;
 
 
     public function __construct()

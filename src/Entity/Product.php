@@ -19,7 +19,15 @@ use Symfony\Component\Serializer\Annotation\Groups;
  *                      "read:Product:collection"
  *                      }
  *              },
- *          }
+ *          },
+ *          "post" = {
+ *              "controller" = NotFoundAction::class,
+ *              "read" = false,
+ *              "output" = false,
+ *          "openapi_context"={
+ *                  "summary" = "hidden",
+ *              },
+ *          },
  *     },
  *     itemOperations={
  *          "get_products"={
@@ -30,9 +38,33 @@ use Symfony\Component\Serializer\Annotation\Groups;
  *                  "groups"={
  *                      "read:Customer:item"
  *                      }
+ *                  },
+ *              },
+ *          "put" = {
+ *              "controller" = NotFoundAction::class,
+ *              "read" = false,
+ *              "output" = false,
+ *          "openapi_context"={
+ *                  "summary" = "hidden",
  *              },
  *          },
- *      },
+ *          "patch" = {
+ *              "controller" = NotFoundAction::class,
+ *              "read" = false,
+ *              "output" = false,
+ *          "openapi_context"={
+ *                  "summary" = "hidden",
+ *              },
+ *          },
+ *          "delete" = {
+ *              "controller" = NotFoundAction::class,
+ *              "read" = false,
+ *              "output" = false,
+ *              "openapi_context"={
+ *                  "summary" = "hidden",
+ *              },
+ *          },
+ *     },
  * )
  */
 class Product

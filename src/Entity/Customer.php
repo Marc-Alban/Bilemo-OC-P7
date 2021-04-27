@@ -57,6 +57,14 @@ use Symfony\Component\Serializer\Annotation\Groups;
  *              },
  *              "requirements" = {"id" = "\d+"},
  *          },
+ *          "patch" = {
+ *              "controller" = NotFoundAction::class,
+ *              "read" = false,
+ *              "output" = false,
+ *          "openapi_context"={
+ *                  "summary" = "hidden",
+ *              },
+ *          },
  *          "delete_customers" = {
  *              "method" = "DELETE",
  *              "path" = "/customers/{id}",
@@ -147,7 +155,7 @@ class Customer implements UserInterface
     /**
      * @ORM\ManyToOne(targetEntity=Reseller::class, inversedBy="customers")
      */
-    private Reseller $resellers;
+    private ?Reseller $resellers;
 
     private UserPasswordEncoderInterface $passwordEncoder;
 
