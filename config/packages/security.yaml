@@ -1,5 +1,4 @@
 security:
-    # https://symfony.com/doc/current/security.html#where-do-users-come-from-user-providers
     providers:
         chain_provider:
             chain:
@@ -10,40 +9,52 @@ security:
             entity: {class: App\Entity\Reseller, property: email}
 
     encoders:
-            App\Entity\Reseller:
-                    algorithm: bcrypt
-            App\Entity\Customer:
-                    algorithm: bcrypt
+        App\Entity\Reseller:
+            algorithm: bcrypt
+            cost: 15
+        App\Entity\Customer:
+            algorithm: bcrypt
+            cost: 15
 
     firewalls:
         dev:
             pattern: ^/(_(profiler|wdt)|css|images|js)/
             security: false
-        main:
-            pattern: ^/(login|register)
+
+        registration:
+            pattern: ^/api/auth/register
             anonymous: true
+            stateless: true
+            methods: [POST]
+            provider: reseller
+
+        login:
+            pattern: ^/api/auth/login
+            anonymous: true
+            stateless: true
+            methods: [POST]
             json_login:
                 username_path:            email
                 password_path:            password
-                check_path:               /api/login
+                check_path:               /api/auth/login
                 success_handler:          lexik_jwt_authentication.handler.authentication_success
                 failure_handler:          lexik_jwt_authentication.handler.authentication_failure
+            provider: chain_provider
+
+        api:
+            pattern: ^/api
+            stateless: true
+            anonymous: true
+            provider: chain_provider
             guard:
                 authenticators:
                     - lexik_jwt_authentication.jwt_token_authenticator
-            provider: chain_provider
-        api_doc:
-            pattern: ^/api/doc
-            security: false
 
+        api_doc:
+            pattern: ^/api/docs
+            anonymous: true
 
     access_control:
-        - { path: ^/api/login, roles: IS_AUTHENTICATED_ANONYMOUSLY }
-        - { path: ^/api/register, roles: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/api/docs, roles: IS_AUTHENTICATED_ANONYMOUSLY }
-        - { path: ^/api/doc, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/api/auth/(login|register), roles: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/api, roles: IS_AUTHENTICATED_FULLY }
-
-
-    role_hierarchy:
-        ROLE_RESELLER: ROLE_USER

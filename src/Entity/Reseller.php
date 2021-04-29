@@ -7,22 +7,115 @@ use Doctrine\Common\Collections\Collection;
 use App\Repository\ResellerRepository;
 use Doctrine\ORM\Mapping as ORM;
 use ApiPlatform\Core\Annotation\ApiResource;
-use phpDocumentor\Reflection\Types\Self_;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
-use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\Serializer\Annotation\Groups;
+use ApiPlatform\Core\Action\NotFoundAction;
 
 /**
  * @ORM\Entity(repositoryClass=ResellerRepository::class)
  * @ApiResource(
  *     collectionOperations={
- *         "post_created_resellers"={
+ *         "post_created_resellers"=
+ *          {
  *             "method"="POST",
- *             "path"="/api/register",
+ *             "path"="/auth/register",
+ *             "openapi_context"={
+ *                  "summary" = "Create a reseller",
+ *                  "description" = "Create reseller with datas",
+ *                   "requestBody" = {
+ *                       "content" = {
+ *                           "application/json" = {
+ *                               "schema"  = {
+ *                                   "type"       = "object",
+ *                                   "properties" =
+ *                                       {
+ *                                       "name"        = {"type" = "string"},
+ *                                       "email"        = {"type" = "string"},
+ *                                       "password" = {"type" = "string"},
+ *                                       },
+ *                                },
+ *                               "example" = {
+ *                                   "name"        = "name",
+ *                                   "email"        = "reseller@orange.fr",
+ *                                   "password" = "123@..text",
+ *                               },
+ *                           },
+ *                       },
+ *                   },
+ *              },
+ *          },
+ *         "post_login_resellers"=
+ *          {
+ *             "method"="POST",
+ *             "path"="/auth/login",
+ *             "openapi_context" = {
+ *                  "summary" = "To connect a reseller",
+ *                  "description" = "Get a token for connect a reseller",
+ *                   "requestBody" = {
+ *                       "content" = {
+ *                           "application/json"   = {
+ *                               "schema"         = {
+ *                                   "type"       = "object",
+ *                                   "properties" =
+ *                                       {
+ *                                       "email"    = {"type" = "string"},
+ *                                       "password" = {"type" = "string"},
+ *                                       },
+ *                                },
+ *                            "example"      = {
+ *                                   "email"    = "reseller@orange.fr",
+ *                                   "password" = "123@..text",
+ *                               },
+ *                           },
+ *                       },
+ *                   },
+ *              },
+ *          },
+ *          "get" = {
+ *              "controller" = NotFoundAction::class,
+ *              "read" = false,
+ *              "output" = false,
+ *          "openapi_context"={
+ *                  "summary" = "hidden",
+ *              },
  *          },
  *     },
- *     itemOperations={},
+ *     itemOperations={
+ *          "get" = {
+ *              "controller" = NotFoundAction::class,
+ *              "read" = false,
+ *              "output" = false,
+  *          "openapi_context"={
+ *                  "summary" = "hidden",
+ *              },
+ *          },
+ *          "put" = {
+ *              "controller" = NotFoundAction::class,
+ *              "read" = false,
+ *              "output" = false,
+  *          "openapi_context"={
+ *                  "summary" = "hidden",
+ *              },
+ *          },
+ *          "patch" = {
+ *              "controller" = NotFoundAction::class,
+ *              "read" = false,
+ *              "output" = false,
+  *          "openapi_context"={
+ *                  "summary" = "hidden",
+ *              },
+ *          },
+ *          "delete" = {
+ *              "controller" = NotFoundAction::class,
+ *              "read" = false,
+ *              "output" = false,
+  *          "openapi_context"={
+ *                  "summary" = "hidden",
+ *              },
+ *          },
+ *     },
  * )
  * @UniqueEntity(
  *     fields={"email"},
@@ -33,6 +126,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  *     message="Il existe déjà un customer avec ce nom: {{ value }} ! "
  * )
  */
+
 class Reseller implements UserInterface
 {
 
@@ -46,25 +140,25 @@ class Reseller implements UserInterface
     /**
      * @ORM\Column(type="string", length=255)
      * @Assert\NotBlank()
-     * @Assert\NotNull()
      * @Assert\Length(
      *     min=5,
      *     max=30,
      *     minMessage="Le nom doit contenir au minimum '{{ limit }}' caractères",
      *     maxMessage="Le nom doit contenir au maximum '{{ limit }}' caractères"
      * )
+     * @Groups({"register:Reseller:collection"})
      */
     private string $name;
 
     /**
      * @ORM\Column(type="string", length=255)
      * @Assert\NotBlank()
-     * @Assert\NotNull()
      * @Assert\Regex(
      *     pattern="/^[a-zA-Z_.-]+@[a-zA-Z-]+\.[a-zA-Z-.]+$/",
      *     match=true,
      *     message="L'email doit être au format: test@live.fr …"
      * )
+     * @Groups({"register:Reseller:collection","login:Reseller:collection"})
      */
     private string $email;
 
@@ -81,6 +175,7 @@ class Reseller implements UserInterface
      *     minMessage="Le password doit contenir au minimum '{{ limit }}' caractères",
      *     maxMessage="Le password doit contenir au maximum '{{ limit }}' caractères"
      * )
+     * @Groups({"register:Reseller:collection","login:Reseller:collection"})
      */
     private string $password;
 
@@ -94,18 +189,15 @@ class Reseller implements UserInterface
      */
     private array $roles;
 
-    private UserPasswordEncoderInterface $passwordEncoder;
-
 
     /**
      * @ORM\OneToMany(targetEntity=Customer::class, mappedBy="resellers")
      */
-    private Collection $customers;
+    private ?Collection $customers;
 
 
-    public function __construct(UserPasswordEncoderInterface $passwordEncoder)
+    public function __construct()
     {
-        $this->passwordEncoder = $passwordEncoder;
         $this->created_at = new \DateTime();
         $this->customers = new ArrayCollection();
         $this->setRoles(['ROLE_RESELLER']);
@@ -147,7 +239,7 @@ class Reseller implements UserInterface
 
     public function setPassword(string $password): self
     {
-        $this->password = $this->passwordEncoder->encodePassword($this, $password);
+        $this->password = $password;
         return $this;
     }
 
