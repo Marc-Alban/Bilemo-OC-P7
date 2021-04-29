@@ -21,7 +21,6 @@ use ApiPlatform\Core\Action\NotFoundAction;
  *          {
  *             "method"="POST",
  *             "path"="/auth/register",
- *             "controller"=App\Controller\Api\CreatedRegister::class,
  *             "openapi_context"={
  *                  "summary" = "Create a reseller",
  *                  "description" = "Create reseller with datas",
@@ -51,22 +50,22 @@ use ApiPlatform\Core\Action\NotFoundAction;
  *          {
  *             "method"="POST",
  *             "path"="/auth/login",
- *             "openapi_context"={
+ *             "openapi_context" = {
  *                  "summary" = "To connect a reseller",
  *                  "description" = "Get a token for connect a reseller",
  *                   "requestBody" = {
  *                       "content" = {
- *                           "application/json" = {
- *                               "schema"  = {
+ *                           "application/json"   = {
+ *                               "schema"         = {
  *                                   "type"       = "object",
  *                                   "properties" =
  *                                       {
- *                                       "email"        = {"type" = "string"},
+ *                                       "email"    = {"type" = "string"},
  *                                       "password" = {"type" = "string"},
  *                                       },
  *                                },
- *                               "example" = {
- *                                   "email"        = "reseller@orange.fr",
+ *                            "example"      = {
+ *                                   "email"    = "reseller@orange.fr",
  *                                   "password" = "123@..text",
  *                               },
  *                           },
@@ -140,7 +139,7 @@ class Reseller implements UserInterface
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Assert\NotNull()
+     * @Assert\NotBlank()
      * @Assert\Length(
      *     min=5,
      *     max=30,
@@ -153,7 +152,7 @@ class Reseller implements UserInterface
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Assert\NotNull()
+     * @Assert\NotBlank()
      * @Assert\Regex(
      *     pattern="/^[a-zA-Z_.-]+@[a-zA-Z-]+\.[a-zA-Z-.]+$/",
      *     match=true,
@@ -165,7 +164,7 @@ class Reseller implements UserInterface
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Assert\NotNull()
+     * @Assert\NotBlank()
      * @Assert\Regex(
      *     pattern="/^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*\W).{6,}$/",
      *     message="mot de passe non valide, doit contenir la lettre majuscule et le numéro et les lettres "

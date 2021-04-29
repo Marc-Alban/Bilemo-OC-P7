@@ -19,6 +19,10 @@ use Symfony\Component\Serializer\Annotation\Groups;
  *                      "read:Product:collection"
  *                      }
  *              },
+ *             "openapi_context"={
+ *                  "summary" = "list of products",
+ *                  "description" = "Get the list of all products",
+ *              },
  *          },
  *          "post" = {
  *              "controller" = NotFoundAction::class,
@@ -34,6 +38,10 @@ use Symfony\Component\Serializer\Annotation\Groups;
  *              "method"="GET",
  *              "path"="/products/{id}",
  *              "requirements"={"id" = "\d+"},
+ *              "openapi_context"={
+ *                  "summary" = "Get a products",
+ *                  "description" = "Get a product with a id, the id is required",
+ *              },
  *              "normalizationContext" = {
  *                  "groups"={
  *                      "read:Customer:item"

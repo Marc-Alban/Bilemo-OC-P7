@@ -10,4 +10,3 @@ app_swagger_ui:
 
 api_login:
     path: /api/auth/login
-    methods: ['POST']

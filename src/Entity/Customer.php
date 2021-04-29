@@ -4,87 +4,193 @@ namespace App\Entity;
 
 use App\Repository\CustomerRepository;
 use Doctrine\ORM\Mapping as ORM;
-use ApiPlatform\Core\Annotation\ApiResource;
-use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
+use ApiPlatform\Core\Annotation\ApiResource;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 
 /**
- * @ORM\Entity(repositoryClass=CustomerRepository::class)
- * @ApiResource(
- *     collectionOperations = {
- *          "get_list_customers" = {
- *              "method" = "GET",
- *              "path" = "/customers",
- *              "normalizationContext" = {
- *                  "groups"={
- *                      "read:Customer:collection"
- *                      }
- *              },
- *          },
- *          "post_created_customer" = {
- *              "method" = "POST",
- *              "path" = "/customers",
- *              "denormalizationContext" = {
- *                  "groups"={
- *                      "post:Customer:collection"
- *                   }
- *              },
- *          },
- *    },
- *    itemOperations = {
- *          "get_customers" = {
- *              "method" = "GET",
- *              "path" = "/customers/{id}",
- *              "normalizationContext" = {
- *                  "groups"={
- *                      "read:Customer:item"
- *                      }
- *              },
- *              "requirements" = {"id" = "\d+"},
- *              "acces_control" = "is_granted('ROLE_RESSELER')"
- *          },
-            "put_customers" = {
- *              "method" = "PUT",
- *              "path" = "/customers/{id}",
- *              "denormalizationContext" = {
- *                  "groups"={
- *                      "put:Customer:item"
- *                      }
- *              },
- *              "requirements" = {"id" = "\d+"},
- *          },
- *          "patch" = {
- *              "controller" = NotFoundAction::class,
- *              "read" = false,
- *              "output" = false,
- *          "openapi_context"={
- *                  "summary" = "hidden",
- *              },
- *          },
- *          "delete_customers" = {
- *              "method" = "DELETE",
- *              "path" = "/customers/{id}",
- *              "requirements" = {"id" = "\d+"},
- *          },
- *     }
- * )
- * @UniqueEntity(
- *     fields={"email"},
- *     message="Il existe déjà un customer avec cette email: {{ value }} ! "
- * )
- * @UniqueEntity(
- *     fields={"name"},
- *     message="Il existe déjà un customer avec ce nom: {{ value }} ! "
- * )
- * @UniqueEntity(
- *     fields={"last_name"},
- *     message="Il existe déjà un customer avec ce prénom: {{ value }} ! "
- * )
- */
+*@ORM\Entity(repositoryClass = CustomerRepository::class)
+*@ApiResource(
+*     attributes={
+*                  "normalization_context"={"groups"={"read:Customer:collection","read:Customer:item"}},
+*                  "denormalization_context"={"groups"={"post:Customer:collection", "put:Customer:item"}}
+*                },
+*	collectionOperations =
+*                         {
+*                          "get_list_customers" =
+*                                                {
+*                                                 "method" = "GET",
+*                                                 "path" = "/customers",
+*                                                 "openapi_context" =
+*                                                                   {
+*	                                                                 "summary" = "Get list Customer",
+*                                                                    "description" = "Get the list of all Custommer",
+*                                                                   },
+*                                                },
+*						"post_created_customer" =
+*						                         {
+*							                       "method" = "POST",
+*						                          "path" = "/customers",
+*						                          "openapi_context" =
+*						                                             {
+*							                                            "summary" = "Create a Customer",
+*						                                               "description" = "Create Customer with datas",
+*						                                               "requestBody" =
+*						                                                              {
+*							                                                            "content" =
+*						                                                                           {
+*							                                                                         "application/json" =
+*						                                                                                                {
+*							                                                                                              "schema" =
+*						                                                                                                           {
+*							                                                                                                         "type" = "object",
+*						                                                                                                            "properties" =
+*						                                                                                                                           {
+*							                                                                                                                         "name" =
+*						                                                                                                                                    {
+*							                                                                                                                                  "type" = "string"
+*						                                                                                                                                    },
+*						                                                                                                                            "lastName" =
+*						                                                                                                                                        {
+*							                                                                                                                                       "type" = "string"
+*						                                                                                                                                        },
+*						                                                                                                                             "email" =
+*						                                                                                                                                       {
+*						                                                                                                                             	           "type" = "string"
+*						                                                                                                                                       },
+*						                                                                                                                             "password" =
+*						                                                                                                                                         {
+*						                                                                                                                             	            "type" = "string"
+*						                                                                                                                                         },
+*						                                                                                                                             },
+*						                                                                                                          },
+*						                                                                                                   "example" =
+*						                                                                                                               {
+*						                                                                                                   	          "name" = "totot ",
+*						                                                                                                                 "lastName" = "tatat ",
+*						                                                                                                                 "email" = "reseller@orange.fr",
+*						                                                                                                                 "password" = "123@..text",
+*						                                                                                                               },
+*						                                                                                               },
+*						                                                                        },
+*						                                                             },
+*						                                             },
+*						                         },
+*                        },
+*   itemOperations =
+*                   {
+*	                 "get_customers" =
+*                                       {
+*                                        "method" = "GET",
+*                                        "path" = "/customers/{id}",
+*                                        "openapi_context" =
+*                                                           {
+*                                                           "summary" = "Get one Customer",
+*                                                           "description" = "Get one Custommer with id",
+*                                                           },
+*                                         "requirements" =
+*                                                         {
+*                                         	                "id" = "\d+"
+*                                                         },
+*                                         "acces_control" = "is_granted('ROLE_RESSELER')",
+*                                       },
+*                   "put_customers" =
+*                                     {
+*                   	                "method" = "PUT",
+*                                       "path" = "/customers/{id}",
+*                                       "openapi_context" =
+*                                                           {
+*	                                                         "summary" = "Update a Customer",
+*                                                            "description" = "Update a Customer with a id and new datas",
+*                                                            "requestBody" =
+*                                                                           {
+*                                                                           	"content" =
+*                                                                                           {
+*	                                                                                          "application/json" =
+*                                                                                                                 {
+*	                                                                                                                "schema" =
+*                                                                                                                              {
+*	                                                                                                                             "type" = "object",
+*                                                                                                                                "properties" =
+*                                                                                                                                               {
+*	                                                                                                                                              "name" =
+*                                                                                                                                                           {
+*                                                                                                                             	                              "type" = "string"
+*                                                                                                                                                            },
+*                                                                                                                                                 "lastName" =
+*                                                                                                                                                             {
+*                                                                                                                             	                                "type" = "string"
+*                                                                                                                                                             },
+*                                                                                                                                                  "email" =
+*                                                                                                                                                             {
+*                                                                                                                             	                                "type" = "string"
+*                                                                                                                                                             },
+*                                                                                                                                                  "password" =
+*                                                                                                                                                              {
+*                                                                                                                             	                                 "type" = "string"
+*                                                                                                                                                               },
+*                                                                                                                                            },
+*                                                                                                                               },
+*                                                                                                               },
+*                                                                                          "example" =
+*                                                                                                       {
+*                                                                                          	              "name" = "totot ",
+*                                                                                                         "lastName" = "tatat ",
+*                                                                                                         "email" = "reseller@orange.fr",
+*                                                                                                         "password" = "123@..text",
+*                                                                                                       },
+*                                                                                       },
+*                                                                        },
+*                                                        },
+*                                    "requirements" =
+*                                                     {
+*                                    	                "id" = "\d+"
+*                                                     },
+*                                   },
+*                   "patch" =
+*                            {
+*                   	        "controller" = NotFoundAction::class,
+*                               "read" = false,
+*                               "output" = false,
+*                               "openapi_context" =
+*                                                   {
+*                   	                              "summary" = "hidden",
+*                                                   },
+*                           },
+*                  "delete_customers" =
+*                                       {
+*                                         "method" = "DELETE",
+*                                         "path" = "/customers/{id}",
+*                                         "requirements" =
+*                                                         {
+*                                                           "id" = "\d+"
+*                                                         },
+*                                         "openapi_context" =
+*                                                             {
+*                                                               "summary" = "Delete one Customer",
+*                                                               "description" = "Delete one Custommer with id",
+*                                                             },
+*                                       },
+*                  }
+*       )
+*
+*   @UniqueEntity(
+*   	fields ={"email"},
+*       message = "Il existe déjà un customer avec cette email: {{ value }} ! "
+*   )
+*   @UniqueEntity(
+*   	fields ={"name"},
+*       message = "Il existe déjà un customer avec ce nom: {{ value }} ! "
+*   )
+*   @UniqueEntity(
+*   	fields ={"last_name"},
+*       message = "Il existe déjà un customer avec ce prénom: {{ value }} ! "
+*   )
+**/
 class Customer implements UserInterface
 {
     /**
