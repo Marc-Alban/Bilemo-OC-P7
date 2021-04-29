@@ -1,5 +1,5 @@
 <?php
-
+	
 
 namespace App\Events;
 
@@ -13,29 +13,29 @@ use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
 class PasswordEncoderSubscriber implements EventSubscriberInterface
 {
-
-    private UserPasswordEncoderInterface $encoder;
-
-    public function __construct(UserPasswordEncoderInterface $encoder)
-    {
-        $this->encoder = $encoder;
-    }
-
-    public static function getSubscribedEvents()
-    {
-        return [
-            KernelEvents::VIEW => ['encodePassword', EventPriorities::PRE_WRITE]
-        ];
-    }
-
-    public function encodePassword(ViewEvent $event)
-    {
-        $result = $event->getControllerResult();
-        $method = $event->getRequest()->getMethod();
-
-        if($result instanceof Reseller && $method === "POST"){
-            $hash = $this->encoder->encodePassword($result, $result->getPassword());
-            $result->setPassword($hash);
-        }
-    }
+	
+	private UserPasswordEncoderInterface $encoder;
+	
+	public function __construct(UserPasswordEncoderInterface $encoder)
+	{
+		$this->encoder = $encoder;
+	}
+	
+	public static function getSubscribedEvents()
+	{
+		return [
+			KernelEvents::VIEW => ['encodePassword', EventPriorities::PRE_WRITE]
+		];
+	}
+	
+	public function encodePassword(ViewEvent $event)
+	{
+		$result = $event->getControllerResult();
+		$method = $event->getRequest()->getMethod();
+		
+		if($result instanceof Reseller && $method === "POST"){
+			$hash = $this->encoder->encodePassword($result, $result->getPassword());
+			$result->setPassword($hash);
+		}
+	}
 }
