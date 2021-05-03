@@ -2,6 +2,7 @@ api_platform:
     title: 'BileMo API'
     description: 'API PHONES'
     version: '0.0.1'
+    show_webby: false
     collection:
         order: 'DESC'
         pagination:
@@ -11,6 +12,7 @@ api_platform:
     patch_formats:
         json: ['application/merge-patch+json']
     swagger:
+        versions: [3]
         api_keys:
             apiKey:
                 name: Authorization

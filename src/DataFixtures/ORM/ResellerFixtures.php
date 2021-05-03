@@ -26,7 +26,7 @@ class ResellerFixtures extends Fixture
 
         $reseller0 = new Reseller($this->passwordEncoder);
         $reseller0->setName("SFR")
-            ->setEmail(strtolower($this->faker->firstName($genre[mt_rand(0, 1)]) . "@" . $reseller0->getName() . "com"))
+            ->setEmail(strtolower($this->faker->firstName($genre[mt_rand(0, 1)]) . "@" . $reseller0->getName() . ".com"))
             ->setPassword($this->passwordEncoder->encodePassword($reseller0, "resellSfr"))
         ;
         $manager->persist($reseller0);
@@ -34,7 +34,7 @@ class ResellerFixtures extends Fixture
 
         $reseller1 = new Reseller($this->passwordEncoder);
         $reseller1->setName("Bouygue")
-            ->setEmail(strtolower($this->faker->firstName($genre[mt_rand(0, 1)]) . "@" . $reseller1->getName() . "com"))
+            ->setEmail(strtolower($this->faker->firstName($genre[mt_rand(0, 1)]) . "@" . $reseller1->getName() . ".com"))
             ->setPassword($this->passwordEncoder->encodePassword($reseller1, "resellBouygue"))
         ;
         $manager->persist($reseller1);
@@ -42,7 +42,7 @@ class ResellerFixtures extends Fixture
 
         $reseller2 = new Reseller($this->passwordEncoder);
         $reseller2->setName("Orange")
-            ->setEmail(strtolower($this->faker->firstName($genre[mt_rand(0, 1)]) . "@" . $reseller2->getName() . "com"))
+            ->setEmail(strtolower($this->faker->firstName($genre[mt_rand(0, 1)]) . "@" . $reseller2->getName() . ".com"))
             ->setPassword($this->passwordEncoder->encodePassword($reseller2, "resellOrange"))
         ;
         $manager->persist($reseller2);
@@ -50,7 +50,7 @@ class ResellerFixtures extends Fixture
 
         $reseller3 = new Reseller($this->passwordEncoder);
         $reseller3->setName("Free")
-            ->setEmail(strtolower($this->faker->firstName($genre[mt_rand(0, 1)]) . "@" . $reseller3->getName() . "com"))
+            ->setEmail(strtolower($this->faker->firstName($genre[mt_rand(0, 1)]) . "@" . $reseller3->getName() . ".com"))
             ->setPassword($this->passwordEncoder->encodePassword($reseller3, "resellFree"))
         ;
         $manager->persist($reseller3);

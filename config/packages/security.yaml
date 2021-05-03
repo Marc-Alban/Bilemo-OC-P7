@@ -1,12 +1,11 @@
 security:
+    # https://symfony.com/doc/current/security.html#where-do-users-come-from-user-providers
     providers:
-        chain_provider:
-            chain:
-                providers: [reseller, customer]
-        customer:
-            entity: {class: App\Entity\Customer, property: email}
+        # used to reload user from session & other features (e.g. switch_user)
         reseller:
-            entity: {class: App\Entity\Reseller, property: email}
+            entity:
+                class: App\Entity\Reseller
+                property: email
 
     encoders:
         App\Entity\Reseller:
@@ -21,40 +20,48 @@ security:
             pattern: ^/(_(profiler|wdt)|css|images|js)/
             security: false
 
-        registration:
-            pattern: ^/api/auth/register
-            anonymous: true
-            stateless: true
-            methods: [POST]
-            provider: reseller
-
         login:
             pattern: ^/api/auth/login
             anonymous: true
             stateless: true
-            methods: [POST]
             json_login:
                 username_path:            email
                 password_path:            password
                 check_path:               /api/auth/login
                 success_handler:          lexik_jwt_authentication.handler.authentication_success
                 failure_handler:          lexik_jwt_authentication.handler.authentication_failure
-            provider: chain_provider
-
         api:
             pattern: ^/api
             stateless: true
             anonymous: true
-            provider: chain_provider
+            provider: reseller
             guard:
                 authenticators:
                     - lexik_jwt_authentication.jwt_token_authenticator
+        main:
+            anonymous: true
+            lazy: true
+            provider: reseller
+
+            form_login:
+                login_path: security_connexion
+                check_path: security_connexion
+                default_target_path: gotoapi
+
+            logout:
+                path: security_disconnect
+                target: security_connexion
 
         api_doc:
             pattern: ^/api/docs
             anonymous: true
 
+
     access_control:
         - { path: ^/api/docs, roles: IS_AUTHENTICATED_ANONYMOUSLY }
-        - { path: ^/api/auth/(login|register), roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/api/auth/login, roles: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/api, roles: IS_AUTHENTICATED_FULLY }
+
+    role_hierarchy:
+        ROLE_RESELLER: ROLE_USER
+        ROLE_ADMIN: ROLE_RESELLER
