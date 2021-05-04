@@ -14,6 +14,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
 use ApiPlatform\Core\Action\NotFoundAction;
 use ApiPlatform\Core\Annotation\ApiFilter;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
+use ApiPlatform\Core\Annotation\ApiSubresource;
 
 /**
 * @ApiResource(
@@ -119,7 +120,7 @@ use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
  *          },
 *      "get_Resellers"={
 *          "method"="GET",
-*          "path"="/resllers",
+*          "path"="/resellers",
 *          "normalizationContext"={
 *              "groups"={"get:Reseller:read"}
 *          },
@@ -134,7 +135,7 @@ use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
 * @ApiFilter(
 *  SearchFilter::class,
 *  properties={
-*     "id" : "exact",
+*      "id" : "exact",
 *      "name":"partial"
 *  }
 * ),
@@ -215,6 +216,7 @@ private array $roles;
 
 /**
  * @ORM\OneToMany(targetEntity=Customer::class, mappedBy="resellers")
+ * @ApiSubresource()
  */
 private ?Collection $customers;
 

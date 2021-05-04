@@ -14,7 +14,8 @@ use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
  * @ORM\Entity(repositoryClass=ProductRepository::class)
  * @ApiResource(
  *  attributes={
- *      "order"={"id":"DESC"}
+ *      "order"={"id":"DESC"},
+ *      "pagination_items_per_page"=3,
  * },
  *     itemOperations={
  *          "get_one_product"={

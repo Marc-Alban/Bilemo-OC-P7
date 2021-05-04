@@ -29,7 +29,7 @@ use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
  *          "security"="is_granted('ROLE_RESELLER')",
  *          "security_message"="Resource reserved for Reseller",
  *          "normalization_context"={
- *              "groups"={"get:Customer:item"}
+ *              "groups"={"get:Customers:resellers"}
  *          },
  *          "openapi_context" = {
  *              "summary" = "Consult the details of a Customer linked to a client",
@@ -161,14 +161,14 @@ use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
  *							"type" = "object","properties" =
  *							{
  *								"name" = {"type" = "string"},
- *								"last_name" = {"type" = "string"},
+ *								"lastName" = {"type" = "string"},
  *								"email" = {"type" = "string"},
  *								"password" = {"type" = "string"}
  *							},
  *							"example" =
  *							{
  *								"name" = "totot",
- *								"last_name" = "tatat",
+ *								"lastName" = "tatat",
  *								"email" = "reseller@orange.fr",
  *								"password" = "123@..Text"
  *							},
@@ -208,7 +208,7 @@ class Customer implements UserInterface
 	 * @ORM\Id
 	 * @ORM\GeneratedValue
 	 * @ORM\Column(type="integer")
-	 * @Groups({"get:Customer:item"})
+	 * @Groups({"get:Customers:resellers"})
 	 */
 	private int $id;
 	
@@ -221,22 +221,22 @@ class Customer implements UserInterface
 	 *     minMessage="Le nom doit contenir au minimum {{ limit }} caractères",
 	 *     maxMessage="Le nom doit contenir au maximum {{ limit }} caractères"
 	 * )
-	 * @Groups({"get:Customer:collection","post:Customer:collection","get:Customer:item", "manager:Customer:write"})
+	 * @Groups({"get:Customer:collection","post:Customer:collection","get:Customers:resellers", "manager:Customer:write"})
 	 */
 	private string $name;
 	
 	/**
 	 * @ORM\Column(type="string", length=255)
-	 * @Assert\NotNull()
+	 * @Assert\NotBlank()
 	 * @Assert\Length(
 	 *     min=3,
 	 *     max=15,
 	 *     minMessage="Le prénom doit contenir au minimum {{ limit }} caractères",
 	 *     maxMessage="Le prénom doit contenir au maximum {{ limit }} caractères"
 	 * )
-	 * @Groups({"get:Customer:collection","post:Customer:collection","get:Customer:item", "manager:Customer:write"})
+	 * @Groups({"get:Customer:collection","post:Customer:collection","get:Customers:resellers", "manager:Customer:write"})
 	 */
-	private string $last_name;
+	private string $lastName;
 	
 	/**
 	 * @ORM\Column(type="string", length=255)
@@ -246,7 +246,7 @@ class Customer implements UserInterface
 	 *     match=true,
 	 *     message="L'email doit être au format: test@live.fr …"
 	 * )
-	 * @Groups({"get:Customer:collection","post:Customer:collection","get:Customer:item", "manager:Customer:write"})
+	 * @Groups({"get:Customer:collection","post:Customer:collection","get:Customers:resellers", "manager:Customer:write"})
 	 */
 	private string $email;
 	
@@ -264,20 +264,20 @@ class Customer implements UserInterface
 	
 	/**
 	 * @ORM\Column(type="array", length=255)
-	 * @Groups({"post:Customer:collection","get:Customer:item", "manager:Customer:write"})
+	 * @Groups({"post:Customer:collection","get:Customers:resellers", "manager:Customer:write"})
 	 */
 	private array $roles;
 	
 	/**
 	 * @ORM\Column(type="datetime")
-	 * @Groups({"get:Customer:item"})
+	 * @Groups({"get:Customers:resellers"})
 	 */
 	private \DateTimeInterface $created_at;
 	
 	
 	/**
 	 * @ORM\ManyToOne(targetEntity=Reseller::class, inversedBy="customers")
-	 * @Groups({"get:Customer:item", "manager:Customer:write"})
+	 * @Groups({"get:Customers:resellers", "manager:Customer:write"})
 	 */
 	private Reseller $resellers;
 	
@@ -308,12 +308,12 @@ class Customer implements UserInterface
 	
 	public function getLastName(): string
 	{
-		return $this->last_name;
+		return $this->lastName;
 	}
 	
-	public function setLastName(string $last_name): self
+	public function setLastName(string $lastName): self
 	{
-		$this->last_name = $last_name;
+		$this->lastName = $lastName;
 		
 		return $this;
 	}
