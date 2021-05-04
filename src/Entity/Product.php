@@ -99,14 +99,7 @@ use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
  *          },
  *     },
  * ),
- * @ApiFilter(
- *  SearchFilter::class,
- *  properties={
- *      "name":"partial",
- *      "price":"partial",
- *      "category":"partial",
- *      "propertys":"partial"
- *  }
+ * @ApiFilter(SearchFilter::class, properties={"id": "exact", "price": "exact", "name": "partial"})
  * ),
  */
 class Product

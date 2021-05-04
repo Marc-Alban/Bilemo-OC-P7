@@ -61,8 +61,6 @@ use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
 *          {
 *             "method"="POST",
 *             "path"="/auth/register",
-*		      "security" = "is_granted('ROLE_RESELLER')",
-*		      "security_message" = "Operation reserved for Reseller",
 *             "openapi_context"={
 *                  "summary" = "Sign up  (roles : Reseller)",
 *                  "description" = "Sign up a  Reseller with datas",
@@ -136,6 +134,7 @@ use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
 * @ApiFilter(
 *  SearchFilter::class,
 *  properties={
+*     "id" : "exact",
 *      "name":"partial"
 *  }
 * ),
@@ -209,9 +208,9 @@ private string $password;
 private \DateTimeInterface $created_at;
 
 /**
- * @ORM\Column(type="array", length=255, nullable=true)
+ * @ORM\Column(type="array", length=255)
  */
-private ?array $roles;
+private array $roles;
 
 
 /**
