@@ -80,10 +80,7 @@ use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
  *		"security_message" = "Collection reserved for Reseller",
  *		"normalization_context" =
  *		{
- *			"groups" =
- *			{
- *				"get:Customer:collection"
- *			}
+ *			"groups" = {"get:Customer:collection"}
  *		},
  *		"openapi_context" =
  *		{
@@ -95,16 +92,12 @@ use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
  *	"post_created_Customer" =
  *	{
  *		"method" = "POST",
- *		"path" = "/customer",
- *		"controller" = CreatedCustomer::class,
+ *		"path" = "/customers",
  *		"security" = "is_granted('ROLE_RESELLER')",
  *		"security_message" = "Operation reserved for Reseller",
  *      "denormalization_context" =
  *		{
- *			"groups" =
- *			{
- *				"post:Customer:collection"
- *			}
+ *			"groups" = {"post:Customer:collection"}
  *		},
  *		"openapi_context" =
  *		{
@@ -122,16 +115,16 @@ use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
  *							"type" = "object","properties" =
  *							{
  *								"name" = {"type" = "string"},
- *								"lastName" = {"type" = "string"},
+ *								"last_name" = {"type" = "string"},
  *								"email" = {"type" = "string"},
- *								"password" = {"type" = "string"},
+ *								"password" = {"type" = "string"}
  *							},
  *							"example" =
  *							{
- *								"name" = "totot ",
- *								"lastName" = "tatat ",
- *								"email" = "reseller@orange.fr",
- *								"password" = "123@..text",
+ *								"name" : "totot",
+ *								"last_name" : "tatat",
+ *								"email" : "reseller@gmail.fr",
+ *								"password" : "123@..Text"
  *							},
  *						},
  *					},
@@ -144,7 +137,7 @@ use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
  *		"security" = "is_granted('ROLE_ADMIN')",
  *		"security_message" = "Operation reserved for admin",
  *		"method" = "POST",
- *		"path" = "/admin/customer",
+ *		"path" = "/admin/customers",
  *		"denormalization_context" =
  *		{
  *			"groups" =
@@ -168,16 +161,16 @@ use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
  *							"type" = "object","properties" =
  *							{
  *								"name" = {"type" = "string"},
- *								"lastName" = {"type" = "string"},
+ *								"last_name" = {"type" = "string"},
  *								"email" = {"type" = "string"},
- *								"password" = {"type" = "string"},
+ *								"password" = {"type" = "string"}
  *							},
  *							"example" =
  *							{
- *								"name" = "totot ",
- *								"lastName" = "tatat ",
+ *								"name" = "totot",
+ *								"last_name" = "tatat",
  *								"email" = "reseller@orange.fr",
- *								"password" = "123@..text",
+ *								"password" = "123@..Text"
  *							},
  *						},
  *					},
@@ -190,6 +183,7 @@ use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
  * @ApiFilter(
  *  SearchFilter::class,
  *  properties={
+ *     "id" : "exact",
  *      "name":"ipartial",
  *      "last_name":"ipartial"
  *  }
@@ -233,13 +227,13 @@ class Customer implements UserInterface
 	
 	/**
 	 * @ORM\Column(type="string", length=255)
+	 * @Assert\NotNull()
 	 * @Assert\Length(
 	 *     min=3,
 	 *     max=15,
 	 *     minMessage="Le prénom doit contenir au minimum {{ limit }} caractères",
 	 *     maxMessage="Le prénom doit contenir au maximum {{ limit }} caractères"
 	 * )
-	 * @Assert\NotNull()
 	 * @Groups({"get:Customer:collection","post:Customer:collection","get:Customer:item", "manager:Customer:write"})
 	 */
 	private string $last_name;
@@ -269,10 +263,10 @@ class Customer implements UserInterface
 	private string $password;
 	
 	/**
-	 * @ORM\Column(type="array", length=255, nullable=true)
+	 * @ORM\Column(type="array", length=255)
 	 * @Groups({"post:Customer:collection","get:Customer:item", "manager:Customer:write"})
 	 */
-	private ?array $roles;
+	private array $roles;
 	
 	/**
 	 * @ORM\Column(type="datetime")
@@ -285,7 +279,7 @@ class Customer implements UserInterface
 	 * @ORM\ManyToOne(targetEntity=Reseller::class, inversedBy="customers")
 	 * @Groups({"get:Customer:item", "manager:Customer:write"})
 	 */
-	private ?Reseller $resellers;
+	private Reseller $resellers;
 	
 	
 	public function __construct()

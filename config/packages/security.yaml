@@ -43,23 +43,15 @@ security:
             lazy: true
             provider: reseller
 
-            form_login:
-                login_path: security_connexion
-                check_path: security_connexion
-                default_target_path: gotoapi
-
-            logout:
-                path: security_disconnect
-                target: security_connexion
-
         api_doc:
-            pattern: ^/api/docs
+            pattern: ^/api/docs?ui=re_doc
             anonymous: true
 
 
     access_control:
         - { path: ^/api/docs, roles: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/api/auth/login, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/api/auth/register, roles: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/api, roles: IS_AUTHENTICATED_FULLY }
 
     role_hierarchy:
