@@ -12,7 +12,7 @@ use Symfony\Component\HttpKernel\Event\ViewEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
-class PasswordEncoderSubscriber implements EventSubscriberInterface
+class PasswordEncoderListener implements EventSubscriberInterface
 {
 	
 	private UserPasswordEncoderInterface $encoder;
@@ -22,14 +22,14 @@ class PasswordEncoderSubscriber implements EventSubscriberInterface
 		$this->encoder = $encoder;
 	}
 	
-	public static function getSubscribedEvents()
+	public static function getSubscribedEvents(): array 
 	{
 		return [
 			KernelEvents::VIEW => ['encodePassword', EventPriorities::PRE_WRITE]
 		];
 	}
 	
-	public function encodePassword(ViewEvent $event)
+	public function encodePassword(ViewEvent $event): void
 	{
 		$result = $event->getControllerResult();
 		$method = $event->getRequest()->getMethod();

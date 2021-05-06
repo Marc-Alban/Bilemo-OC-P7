@@ -165,7 +165,7 @@ private int $id;
  * @ORM\Column(type="string", length=255)
  * @Assert\NotBlank()
  * @Assert\Length(
- *     min=5,
+ *     min=3,
  *     max=30,
  *     minMessage="Le nom doit contenir au minimum '{{ limit }}' caractères",
  *     maxMessage="Le nom doit contenir au maximum '{{ limit }}' caractères"
@@ -194,7 +194,7 @@ private string $email;
  *     message="mot de passe non valide, doit contenir la lettre majuscule et le numéro et les lettres "
  * )
  * @Assert\Length(
- *     min=5,
+ *     min=3,
  *     max=30,
  *     minMessage="Le password doit contenir au minimum '{{ limit }}' caractères",
  *     maxMessage="Le password doit contenir au maximum '{{ limit }}' caractères"
@@ -304,7 +304,7 @@ public function removeCustomer(Customer $customer): self
 	if ($this->customers->removeElement($customer)) {
 		// set the owning side to null (unless already changed)
 		if ($customer->getResellers() === $this) {
-			$customer->setResellers(null);
+			$customer->setResellers($this);
 		}
 	}
 	

@@ -11,6 +11,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use ApiPlatform\Core\Annotation\ApiFilter;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
+
 	
 /**
  * @ApiResource(
@@ -115,14 +116,14 @@ use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
  *							"type" = "object","properties" =
  *							{
  *								"name" = {"type" = "string"},
- *								"last_name" = {"type" = "string"},
+ *								"lastName" = {"type" = "string"},
  *								"email" = {"type" = "string"},
  *								"password" = {"type" = "string"}
  *							},
  *							"example" =
  *							{
  *								"name" : "totot",
- *								"last_name" : "tatat",
+ *								"lastName" : "tatat",
  *								"email" : "reseller@gmail.fr",
  *								"password" : "123@..Text"
  *							},
@@ -185,7 +186,7 @@ use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
  *  properties={
  *     "id" : "exact",
  *      "name":"ipartial",
- *      "last_name":"ipartial"
+ *      "lastName":"ipartial"
  *  }
  *),
  * @ORM\Entity(repositoryClass = CustomerRepository::class),
@@ -198,7 +199,7 @@ use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
  *   message = "Il existe déjà un Customer avec ce nom: {{ value }} ! "
  *)
  * @UniqueEntity(
- *   fields ={"last_name"},
+ *   fields ={"lastName"},
  *   message = "Il existe déjà un Customer avec ce prénom: {{ value }} ! "
  *)
  */
@@ -277,7 +278,7 @@ class Customer implements UserInterface
 	
 	/**
 	 * @ORM\ManyToOne(targetEntity=Reseller::class, inversedBy="customers")
-	 * @Groups({"get:Customers:resellers", "manager:Customer:write"})
+	 * @Groups({"get:Customers:resellers","get:Customer:collection", "manager:Customer:write"})
 	 */
 	private Reseller $resellers;
 	
