@@ -25,7 +25,7 @@ use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
  *    "get_one_Customer"=
  *    {
  *          "method" = "GET",
- *          "path" = "/customers/{id}",
+ *			"route_name" = "customer_one_reseller",
  *          "requirements" ={"id" = "\d+"},
  *          "security"="is_granted('ROLE_RESELLER')",
  *          "security_message"="Resource reserved for Reseller",
@@ -76,7 +76,7 @@ use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
  *	"get_list_Customers" =
  *	{
  *		"method" = "GET",
- *		"path" = "/customers",
+ *		"route_name" = "relation_customer_to_reseller",
  *		"security" = "is_granted('ROLE_RESELLER')",
  *		"security_message" = "Collection reserved for Reseller",
  *		"normalization_context" =
@@ -228,7 +228,7 @@ class Customer implements UserInterface
 	
 	/**
 	 * @ORM\Column(type="string", length=255)
-	 * @Assert\NotBlank()
+	 * @Assert\NotNull()
 	 * @Assert\Length(
 	 *     min=3,
 	 *     max=15,
@@ -273,7 +273,7 @@ class Customer implements UserInterface
 	 * @ORM\Column(type="datetime")
 	 * @Groups({"get:Customers:resellers"})
 	 */
-	private \DateTimeInterface $created_at;
+	private \DateTimeInterface $createdAt;
 	
 	
 	/**
@@ -286,7 +286,7 @@ class Customer implements UserInterface
 	public function __construct()
 	{
 		$this->setRoles(["ROLE_USER"]);
-		$this->created_at = new \DateTime();
+		$this->createdAt = new \DateTime();
 	}
 	
 	
@@ -345,12 +345,12 @@ class Customer implements UserInterface
 	
 	public function getCreatedAt(): \DateTimeInterface
 	{
-		return $this->created_at;
+		return $this->createdAt;
 	}
 	
-	public function setCreatedAt(\DateTimeInterface $created_at): self
+	public function setCreatedAt(\DateTimeInterface $createdAt): self
 	{
-		$this->created_at = $created_at;
+		$this->createdAt = $createdAt;
 		
 		return $this;
 	}

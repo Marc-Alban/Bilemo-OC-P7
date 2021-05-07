@@ -206,7 +206,7 @@ private string $password;
 /**
  * @ORM\Column(type="datetime")
  */
-private \DateTimeInterface $created_at;
+private \DateTimeInterface $createdAt;
 
 /**
  * @ORM\Column(type="array", length=255)
@@ -224,7 +224,7 @@ private ?Collection $customers;
 public function __construct()
 {
 	$this->setRoles(["ROLE_RESELLER"]);
-	$this->created_at = new \DateTime();
+	$this->createdAt = new \DateTime();
 	$this->customers = new ArrayCollection();
 }
 
@@ -270,12 +270,12 @@ public function setPassword(string $password): self
 
 public function getCreatedAt(): \DateTimeInterface
 {
-	return $this->created_at;
+	return $this->createdAt;
 }
 
-public function setCreatedAt(\DateTimeInterface $created_at): self
+public function setCreatedAt(\DateTimeInterface $createdAt): self
 {
-	$this->created_at = $created_at;
+	$this->createdAt = $createdAt;
 	
 	return $this;
 }

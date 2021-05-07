@@ -157,18 +157,18 @@ class Product
 	 * @ORM\Column(type="datetime")
 	 * @Groups({"read:Product:item"})
 	 */
-	private \DateTimeInterface $created_at;
+	private \DateTimeInterface $createdAt;
 	
 	/**
 	 * @ORM\Column(type="datetime", nullable=true)
 	 * @Groups({"read:Product:item"})
 	 */
-	private ?\DateTimeInterface $updated_at;
+	private ?\DateTimeInterface $updatedAt;
 	
 	public function __construct()
 	{
-		$this->created_at = new \DateTime();
-		$this->updated_at = new \DateTime();
+		$this->createdAt = new \DateTime();
+		$this->updatedAt = new \DateTime();
 	}
 	
 	public function getId(): int
@@ -238,24 +238,24 @@ class Product
 	
 	public function getCreatedAt(): \DateTimeInterface
 	{
-		return $this->created_at;
+		return $this->createdAt;
 	}
 	
-	public function setCreatedAt(\DateTimeInterface $created_at): self
+	public function setCreatedAt(\DateTimeInterface $createdAt): self
 	{
-		$this->created_at = $created_at;
+		$this->createdAt = $createdAt;
 		
 		return $this;
 	}
 	
 	public function getUpdatedAt(): ?\DateTimeInterface
 	{
-		return $this->updated_at;
+		return $this->updatedAt;
 	}
 	
-	public function setUpdatedAt(?\DateTimeInterface $updated_at): self
+	public function setUpdatedAt(?\DateTimeInterface $updatedAt): self
 	{
-		$this->updated_at = $updated_at;
+		$this->updatedAt = $updatedAt;
 		
 		return $this;
 	}
