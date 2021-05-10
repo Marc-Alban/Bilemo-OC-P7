@@ -14,6 +14,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
 use ApiPlatform\Core\Action\NotFoundAction;
 use ApiPlatform\Core\Annotation\ApiFilter;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
+use ApiPlatform\Core\Annotation\ApiSubresource;
 
 /**
 * @ApiResource(
@@ -119,7 +120,7 @@ use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
  *          },
 *      "get_Resellers"={
 *          "method"="GET",
-*          "path"="/resllers",
+*          "path"="/resellers",
 *          "normalizationContext"={
 *              "groups"={"get:Reseller:read"}
 *          },
@@ -134,7 +135,7 @@ use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
 * @ApiFilter(
 *  SearchFilter::class,
 *  properties={
-*     "id" : "exact",
+*      "id" : "exact",
 *      "name":"partial"
 *  }
 * ),
@@ -164,7 +165,7 @@ private int $id;
  * @ORM\Column(type="string", length=255)
  * @Assert\NotBlank()
  * @Assert\Length(
- *     min=5,
+ *     min=3,
  *     max=30,
  *     minMessage="Le nom doit contenir au minimum '{{ limit }}' caractères",
  *     maxMessage="Le nom doit contenir au maximum '{{ limit }}' caractères"
@@ -193,7 +194,7 @@ private string $email;
  *     message="mot de passe non valide, doit contenir la lettre majuscule et le numéro et les lettres "
  * )
  * @Assert\Length(
- *     min=5,
+ *     min=3,
  *     max=30,
  *     minMessage="Le password doit contenir au minimum '{{ limit }}' caractères",
  *     maxMessage="Le password doit contenir au maximum '{{ limit }}' caractères"
@@ -205,7 +206,7 @@ private string $password;
 /**
  * @ORM\Column(type="datetime")
  */
-private \DateTimeInterface $created_at;
+private \DateTimeInterface $createdAt;
 
 /**
  * @ORM\Column(type="array", length=255)
@@ -215,6 +216,7 @@ private array $roles;
 
 /**
  * @ORM\OneToMany(targetEntity=Customer::class, mappedBy="resellers")
+ * @ApiSubresource()
  */
 private ?Collection $customers;
 
@@ -222,7 +224,7 @@ private ?Collection $customers;
 public function __construct()
 {
 	$this->setRoles(["ROLE_RESELLER"]);
-	$this->created_at = new \DateTime();
+	$this->createdAt = new \DateTime();
 	$this->customers = new ArrayCollection();
 }
 
@@ -268,12 +270,12 @@ public function setPassword(string $password): self
 
 public function getCreatedAt(): \DateTimeInterface
 {
-	return $this->created_at;
+	return $this->createdAt;
 }
 
-public function setCreatedAt(\DateTimeInterface $created_at): self
+public function setCreatedAt(\DateTimeInterface $createdAt): self
 {
-	$this->created_at = $created_at;
+	$this->createdAt = $createdAt;
 	
 	return $this;
 }
@@ -302,7 +304,7 @@ public function removeCustomer(Customer $customer): self
 	if ($this->customers->removeElement($customer)) {
 		// set the owning side to null (unless already changed)
 		if ($customer->getResellers() === $this) {
-			$customer->setResellers(null);
+			$customer->setResellers($this);
 		}
 	}
 	

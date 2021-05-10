@@ -11,6 +11,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use ApiPlatform\Core\Annotation\ApiFilter;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
+
 	
 /**
  * @ApiResource(
@@ -24,12 +25,12 @@ use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
  *    "get_one_Customer"=
  *    {
  *          "method" = "GET",
- *          "path" = "/customers/{id}",
+ *			"route_name" = "customer_one_reseller",
  *          "requirements" ={"id" = "\d+"},
  *          "security"="is_granted('ROLE_RESELLER')",
  *          "security_message"="Resource reserved for Reseller",
  *          "normalization_context"={
- *              "groups"={"get:Customer:item"}
+ *              "groups"={"get:Customers:resellers"}
  *          },
  *          "openapi_context" = {
  *              "summary" = "Consult the details of a Customer linked to a client",
@@ -75,7 +76,7 @@ use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
  *	"get_list_Customers" =
  *	{
  *		"method" = "GET",
- *		"path" = "/customers",
+ *		"route_name" = "relation_customer_to_reseller",
  *		"security" = "is_granted('ROLE_RESELLER')",
  *		"security_message" = "Collection reserved for Reseller",
  *		"normalization_context" =
@@ -115,14 +116,14 @@ use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
  *							"type" = "object","properties" =
  *							{
  *								"name" = {"type" = "string"},
- *								"last_name" = {"type" = "string"},
+ *								"lastName" = {"type" = "string"},
  *								"email" = {"type" = "string"},
  *								"password" = {"type" = "string"}
  *							},
  *							"example" =
  *							{
  *								"name" : "totot",
- *								"last_name" : "tatat",
+ *								"lastName" : "tatat",
  *								"email" : "reseller@gmail.fr",
  *								"password" : "123@..Text"
  *							},
@@ -161,14 +162,14 @@ use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
  *							"type" = "object","properties" =
  *							{
  *								"name" = {"type" = "string"},
- *								"last_name" = {"type" = "string"},
+ *								"lastName" = {"type" = "string"},
  *								"email" = {"type" = "string"},
  *								"password" = {"type" = "string"}
  *							},
  *							"example" =
  *							{
  *								"name" = "totot",
- *								"last_name" = "tatat",
+ *								"lastName" = "tatat",
  *								"email" = "reseller@orange.fr",
  *								"password" = "123@..Text"
  *							},
@@ -185,7 +186,7 @@ use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
  *  properties={
  *     "id" : "exact",
  *      "name":"ipartial",
- *      "last_name":"ipartial"
+ *      "lastName":"ipartial"
  *  }
  *),
  * @ORM\Entity(repositoryClass = CustomerRepository::class),
@@ -198,7 +199,7 @@ use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
  *   message = "Il existe déjà un Customer avec ce nom: {{ value }} ! "
  *)
  * @UniqueEntity(
- *   fields ={"last_name"},
+ *   fields ={"lastName"},
  *   message = "Il existe déjà un Customer avec ce prénom: {{ value }} ! "
  *)
  */
@@ -208,7 +209,7 @@ class Customer implements UserInterface
 	 * @ORM\Id
 	 * @ORM\GeneratedValue
 	 * @ORM\Column(type="integer")
-	 * @Groups({"get:Customer:item"})
+	 * @Groups({"get:Customers:resellers"})
 	 */
 	private int $id;
 	
@@ -221,7 +222,7 @@ class Customer implements UserInterface
 	 *     minMessage="Le nom doit contenir au minimum {{ limit }} caractères",
 	 *     maxMessage="Le nom doit contenir au maximum {{ limit }} caractères"
 	 * )
-	 * @Groups({"get:Customer:collection","post:Customer:collection","get:Customer:item", "manager:Customer:write"})
+	 * @Groups({"get:Customer:collection","post:Customer:collection","get:Customers:resellers", "manager:Customer:write"})
 	 */
 	private string $name;
 	
@@ -234,9 +235,9 @@ class Customer implements UserInterface
 	 *     minMessage="Le prénom doit contenir au minimum {{ limit }} caractères",
 	 *     maxMessage="Le prénom doit contenir au maximum {{ limit }} caractères"
 	 * )
-	 * @Groups({"get:Customer:collection","post:Customer:collection","get:Customer:item", "manager:Customer:write"})
+	 * @Groups({"get:Customer:collection","post:Customer:collection","get:Customers:resellers", "manager:Customer:write"})
 	 */
-	private string $last_name;
+	private string $lastName;
 	
 	/**
 	 * @ORM\Column(type="string", length=255)
@@ -246,7 +247,7 @@ class Customer implements UserInterface
 	 *     match=true,
 	 *     message="L'email doit être au format: test@live.fr …"
 	 * )
-	 * @Groups({"get:Customer:collection","post:Customer:collection","get:Customer:item", "manager:Customer:write"})
+	 * @Groups({"get:Customer:collection","post:Customer:collection","get:Customers:resellers", "manager:Customer:write"})
 	 */
 	private string $email;
 	
@@ -264,20 +265,20 @@ class Customer implements UserInterface
 	
 	/**
 	 * @ORM\Column(type="array", length=255)
-	 * @Groups({"post:Customer:collection","get:Customer:item", "manager:Customer:write"})
+	 * @Groups({"post:Customer:collection","get:Customers:resellers", "manager:Customer:write"})
 	 */
 	private array $roles;
 	
 	/**
 	 * @ORM\Column(type="datetime")
-	 * @Groups({"get:Customer:item"})
+	 * @Groups({"get:Customers:resellers"})
 	 */
-	private \DateTimeInterface $created_at;
+	private \DateTimeInterface $createdAt;
 	
 	
 	/**
 	 * @ORM\ManyToOne(targetEntity=Reseller::class, inversedBy="customers")
-	 * @Groups({"get:Customer:item", "manager:Customer:write"})
+	 * @Groups({"get:Customers:resellers","get:Customer:collection", "manager:Customer:write"})
 	 */
 	private Reseller $resellers;
 	
@@ -285,7 +286,7 @@ class Customer implements UserInterface
 	public function __construct()
 	{
 		$this->setRoles(["ROLE_USER"]);
-		$this->created_at = new \DateTime();
+		$this->createdAt = new \DateTime();
 	}
 	
 	
@@ -308,12 +309,12 @@ class Customer implements UserInterface
 	
 	public function getLastName(): string
 	{
-		return $this->last_name;
+		return $this->lastName;
 	}
 	
-	public function setLastName(string $last_name): self
+	public function setLastName(string $lastName): self
 	{
-		$this->last_name = $last_name;
+		$this->lastName = $lastName;
 		
 		return $this;
 	}
@@ -344,12 +345,12 @@ class Customer implements UserInterface
 	
 	public function getCreatedAt(): \DateTimeInterface
 	{
-		return $this->created_at;
+		return $this->createdAt;
 	}
 	
-	public function setCreatedAt(\DateTimeInterface $created_at): self
+	public function setCreatedAt(\DateTimeInterface $createdAt): self
 	{
-		$this->created_at = $created_at;
+		$this->createdAt = $createdAt;
 		
 		return $this;
 	}

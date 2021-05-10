@@ -11,7 +11,7 @@ use Symfony\Component\HttpKernel\Exception\HttpExceptionInterface;
 
 class ExceptionListener
 {
-	public function onKernelException(ExceptionEvent $event)
+	public function onKernelException(ExceptionEvent $event): void
 	{
 		$exception = $event->getThrowable();
 		$code = $this->getCodeError($exception);
@@ -30,7 +30,7 @@ class ExceptionListener
 	 * @param \Throwable $exception
 	 * @return int
 	 */
-	public function getCodeError(\Throwable $exception)
+	public function getCodeError(\Throwable $exception): int
 	{
 		if (!$exception->getCode() && $exception instanceof HttpExceptionInterface) {
 			$code = $exception->getStatusCode();
