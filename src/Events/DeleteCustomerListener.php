@@ -9,16 +9,18 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use ApiPlatform\Core\EventListener\EventPriorities;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
-use App\Entity\Customer;
+use Doctrine\ORM\EntityManagerInterface;
 use App\Entity\Reseller;
-
+use App\Entity\Customer;
 
 final class DeleteCustomerListener implements EventSubscriberInterface
 {
 
-    public function __construct(Security $security)
+    private EntityManagerInterface $em;
+    public function __construct(Security $security, EntityManagerInterface $em)
     {
         $this->security = $security;
+        $this->em = $em;
     }
 
     public static function getSubscribedEvents(): array
@@ -28,37 +30,36 @@ final class DeleteCustomerListener implements EventSubscriberInterface
         ];
     }
 
-    public function checkUserDeleted(ViewEvent $event): void
+    public function checkUserDeleted(ViewEvent $event)
     {
         $customer = $event->getControllerResult();
-        $pathInfo = $event->getRequest()->getPathInfo();
-        $resellerRole = $this->security->getUser()->getRoles() === 'ROLE_RESELLER';
-        $customerRole = $customer->getRoles() === 'ROLE_USER';
-        $currentUserRefClient = $this->security->getUser()->getCustomers();
-        $customerRefClient = $customer->getResellers();
 
-        if ($this->security->getUser()->getId() === $customer->getId()) 
+        $resellerRole = $this->security->getUser()->getRoles();
+        $customerRole = $customer->getRoles();
+
+        $reseller = $this->security->getUser();
+
+        if ($customer->getResellers()->getId() !== $reseller->getId())
         {
-            throw new AccessDeniedException("Prohibited operation. You can not delete your own account.");
-        }elseif($resellerRole && !$customerRole) 
+            throw new AccessDeniedException("Prohibited operation. You can not delete other customer  if is not your.");
+        }
+        elseif($resellerRole !== ['ROLE_RESELLER'] && $customerRole !== ['ROLE_USER']) 
         {
             throw new AccessDeniedException("Prohibited operation. You can only delete a customer defined with the property ROLE_USER.");
-        }elseif($resellerRole && $currentUserRefClient !== $customerRefClient) 
+        }
+        elseif($event->getRequest()->getMethod() !== "DELETE")
         {
-            throw new AccessDeniedException("Prohibited operation. You can only delete a customer of your client reference.");
-        }elseif(strpos($pathInfo, '/api/customers/') !== false && $event->getRequest()->getMethod() === 'DELETE') {
-            $data['data'] = array(
-                'message' => 'Customer has deleted !',
-            );
-            $response = new JsonResponse(
-                $data,
-                '200'
-            );
-            $response->headers->set('Content-Type', 'application/ld+json');
-            $event->setResponse($response);
+            throw new AccessDeniedException("Prohibited operation. You can only delete a customer with the method DELETE.");
         }
-        else {
-            return;
-        }
+
+        $response = new JsonResponse(
+            ['message' => 'Customer has deleted !'],
+            '200',
+            ['Content-Type' => 'application/json']
+        );       
+        
+        $event->setResponse($response);
+        $this->em->remove($customer);
+        $this->em->flush();
     }
 }

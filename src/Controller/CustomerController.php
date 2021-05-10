@@ -2,13 +2,13 @@
 
 namespace App\Controller;
 
-use App\Repository\CustomerRepository;
-use Doctrine\ORM\Tools\Pagination\Paginator;
 use Exception;
+use App\Repository\CustomerRepository;
+use App\Entity\Customer;
 use Symfony\Component\Security\Core\Security;
-
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 
 class CustomerController extends AbstractController
@@ -20,18 +20,20 @@ class CustomerController extends AbstractController
         $this->security = $security;
     }
 
+
     /**
      * @Route(
      *  path="api/customers",
      *  name="relation_customer_to_reseller",
-     *  methods={"GET"}
+     *  methods={"GET"},
      * )
      */
-    public function relations(CustomerRepository $customerRepository)
+    public function relations(CustomerRepository $customerRepository): JsonResponse
     {
         $user = $this->security->getUser()->getId();
-        $nbCustomerToAReseller = $customerRepository->findCustomerToAReseller($user);
+        $nbCustomerToAReseller = $customerRepository->findByReseller($user);
         return $this->json($nbCustomerToAReseller);
+
     }
 
     /**
@@ -44,9 +46,8 @@ class CustomerController extends AbstractController
     public function relationDetail(CustomerRepository $customerRepository, Request $request)
     {
         $user = $this->security->getUser()->getId();
-        $nbCustomerToAReseller = $customerRepository->findCustomerToAReseller($user);
-        $paginator = new Paginator($nbCustomerToAReseller);
-        foreach ($paginator->getQuery() as $customerTab) {
+        $nbCustomerToAReseller = $customerRepository->findByReseller($user);
+        foreach ($nbCustomerToAReseller as $customerTab) {
             if($customerTab['id'] === (int) $request->get('id')){
                  return $this->json($customerTab);
             }
