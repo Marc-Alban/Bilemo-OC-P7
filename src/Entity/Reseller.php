@@ -4,17 +4,18 @@ namespace App\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
-use App\Repository\ResellerRepository;
 use Doctrine\ORM\Mapping as ORM;
 use ApiPlatform\Core\Annotation\ApiResource;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Serializer\Annotation\Groups;
-use ApiPlatform\Core\Action\NotFoundAction;
 use ApiPlatform\Core\Annotation\ApiFilter;
-use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
 use ApiPlatform\Core\Annotation\ApiSubresource;
+use App\Entity\Admin;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
+use ApiPlatform\Core\Action\NotFoundAction;
+use App\Repository\ResellerRepository;
 
 /**
 * @ApiResource(
@@ -220,6 +221,12 @@ private array $roles;
  */
 private ?Collection $customers;
 
+/**
+ * @ORM\ManyToOne(targetEntity=Admin::class, inversedBy="resellers")
+ */
+private Admin $admin;
+	
+
 
 public function __construct()
 {
@@ -336,5 +343,17 @@ public function getUsername(): ?string
 
 public function eraseCredentials(): void
 {
+}
+
+public function getAdmin(): Admin
+{
+	return $this->admin;
+}
+
+
+public function setAdmin($admin): self
+{
+	$this->admin = $admin;
+	return $this;
 }
 }

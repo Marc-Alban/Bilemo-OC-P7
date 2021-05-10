@@ -14,6 +14,9 @@ security:
         App\Entity\Customer:
             algorithm: bcrypt
             cost: 15
+        App\Entity\Admin:
+            algorithm: bcrypt
+            cost: 15
 
     firewalls:
         dev:

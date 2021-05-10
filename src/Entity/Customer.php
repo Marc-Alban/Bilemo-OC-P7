@@ -2,7 +2,6 @@
 	
 	namespace App\Entity;
 	
-use App\Repository\CustomerRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\UserInterface;
 use ApiPlatform\Core\Annotation\ApiResource;
@@ -11,13 +10,14 @@ use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use ApiPlatform\Core\Annotation\ApiFilter;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
+use App\Repository\CustomerRepository;
+
 
 	
 /**
  * @ApiResource(
  *   attributes={
- *       "order"={"id":"DESC"},
- *       "pagination_items_per_page"=3,
+ *       "order"={"id":"DESC"}
  *   },
  *
  * itemOperations=
