@@ -17,9 +17,6 @@ use App\Repository\AdminRepository;
 
 /**
 * @ApiResource(
-*  attributes={
-*      "order"={"id":"DESC"}
-*   },
 *    itemOperations=
 *    {
 *          "get" = {
@@ -147,9 +144,8 @@ class Admin implements UserInterface
 
     /**
      * @ORM\OneToMany(targetEntity=Reseller::class, mappedBy="admin")
-     * @ApiSubresource()
      */
-    private ?Collection $resellers;
+    private ?Collection $adminResellers;
 
 
 
@@ -157,7 +153,7 @@ class Admin implements UserInterface
     {
         $this->setRoles(["ROLE_ADMIN"]);
         $this->createdAt = new \DateTime();
-        $this->resellers = new ArrayCollection();
+        $this->adminResellers = new ArrayCollection();
     }
 
 
@@ -245,29 +241,28 @@ class Admin implements UserInterface
     /**
      * @return Collection|Reseller[]
      */
-    public function getResellers(): ?Collection
+    public function getAdminResellers(): ?Collection
     {
-        return $this->resellers;
+        return $this->adminResellers;
     }
 
-    public function addReseller(Reseller $reseller): self
+    public function addAdminResellers(Reseller $reseller): self
     {
-        if (!$this->resellers->contains($reseller)) {
-            $this->resellers[] = $reseller;
+        if (!$this->adminResellers->contains($reseller)) {
+            $this->adminResellers[] = $reseller;
             $reseller->setAdmin($this);
         }
         
         return $this;
     }
 
-    public function removereseller(Reseller $reseller): self
+    public function removeAdminResellers(Reseller $reseller): self
     {
-        if ($this->customers->removeElement($reseller)) {
+        if ($this->adminResellers->removeElement($reseller)) {
             if ($reseller->getAdmin() === $this) {
                 $reseller->setAdmin($this);
             }
         }
-        
         return $this;
     }
 

@@ -37,7 +37,7 @@
 			$message = (new \Swift_Message('NEW BILEMO API ACCOUNT'))
 				->setFrom('noreply@bilemo.com')
 				->setTo($customer->getEmail())
-				->setBody("Your Api Bilemo account has been added. You can sign in with the following nickname: {$customer->getUsername()} ; and the password you gave us. This user account is attached to the customer account {$customer->getResellers()->getName()} and is referenced with the identifier n°{$customer->getId()}. Thank you for your confidence!");
+				->setBody("Your Api Bilemo account has been added. You can sign in with the following nickname: {$customer->getLastName()} ; and the password you gave us. This user account is attached to the customer account {$customer->getCustomersResellers()->getName()} and is referenced with the identifier n°{$customer->getId()}. Thank you for your confidence!");
 			$this->mailer->send($message);
 		}
 	}

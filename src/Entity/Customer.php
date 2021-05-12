@@ -8,18 +8,14 @@ use ApiPlatform\Core\Annotation\ApiResource;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
-use ApiPlatform\Core\Annotation\ApiFilter;
-use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
 use App\Repository\CustomerRepository;
 
-
-	
 /**
  * @ApiResource(
  *   attributes={
  *       "order"={"id":"DESC"}
  *   },
- *
+ * attributes={"pagination_items_per_page"=4},
  * itemOperations=
  * {
  *    "get_one_Customer"=
@@ -35,7 +31,7 @@ use App\Repository\CustomerRepository;
  *          "openapi_context" = {
  *              "summary" = "Consult the details of a Customer linked to a client",
  *              "description" = "Query by identifier to consult Customer's informations. Resource reserved for Reseller.",
- *              "tags" = {"Single Customer"}
+ *              "tags" = {"Single Customer (Reseller/Admin)"}
  *          }
  *      },
  *     "put" =
@@ -67,7 +63,7 @@ use App\Repository\CustomerRepository;
  *      {
  *          "summary" = "Delete one Customer",
  *          "description" = "Delete by ID one Customer. Operation reserved for Reseller.",
- *          "tags" = {"Remove Customer"}
+ *          "tags" = {"Remove Customer (Reseller/Admin)"}
  *      }
  *    },
  * },
@@ -77,6 +73,7 @@ use App\Repository\CustomerRepository;
  *	{
  *		"method" = "GET",
  *		"route_name" = "relation_customer_to_reseller",
+ *      "requirements"={"id" = "\d+"},
  *		"security" = "is_granted('ROLE_RESELLER')",
  *		"security_message" = "Collection reserved for Reseller",
  *		"normalization_context" =
@@ -87,7 +84,7 @@ use App\Repository\CustomerRepository;
  *		{
  *			"summary" = "Query to the list of Customers",
  *			"description" = "Displays the list of every Customers. You can also search with a filter by username. Collection reserved for Reseller.",
- *			"tags" ={"All Customers"}
+ *			"tags" ={"All Customers (Reseller/Admin)"}
  *		}
  *	},
  *	"post_created_Customer" =
@@ -104,7 +101,7 @@ use App\Repository\CustomerRepository;
  *		{
  *			"summary" = "Creates a new Customer with your client reference",
  *			"description" = "Operation reserved for Reseller. Defines automatically the new Customer with your client reference.",
- *			"tags" = {"Add Customer (roles : Reseller)"},
+ *			"tags" = {"Add Customer (Reseller/Admin)"},
  *			"requestBody" =
  *			{
  *				"content" =
@@ -150,7 +147,7 @@ use App\Repository\CustomerRepository;
  *		{
  *			"summary" = "Creates a new Customer linked to a client",
  *			"description" = "Operation reserved for administrators. Defines automatically the new Customer with your client reference.",
- *			"tags" = {"Add Customer (roles : Admin)"},
+ *			"tags" = {"Add Customer (Admin)"},
  *			"requestBody" =
  *			{
  *				"content" =
@@ -181,14 +178,6 @@ use App\Repository\CustomerRepository;
  *	},
  *	},
  * ),
- * @ApiFilter(
- *  SearchFilter::class,
- *  properties={
- *     "id" : "exact",
- *      "name":"ipartial",
- *      "lastName":"ipartial"
- *  }
- *),
  * @ORM\Entity(repositoryClass = CustomerRepository::class),
  * @UniqueEntity(
  *   fields ={"email"},
@@ -222,7 +211,7 @@ class Customer implements UserInterface
 	 *     minMessage="Le nom doit contenir au minimum {{ limit }} caractères",
 	 *     maxMessage="Le nom doit contenir au maximum {{ limit }} caractères"
 	 * )
-	 * @Groups({"get:Customer:collection","post:Customer:collection","get:Customers:resellers", "manager:Customer:write"})
+	 * @Groups({"get:Customer:collection","post:Customer:collection","get:Customers:resellers"})
 	 */
 	private string $name;
 	
@@ -235,7 +224,7 @@ class Customer implements UserInterface
 	 *     minMessage="Le prénom doit contenir au minimum {{ limit }} caractères",
 	 *     maxMessage="Le prénom doit contenir au maximum {{ limit }} caractères"
 	 * )
-	 * @Groups({"get:Customer:collection","post:Customer:collection","get:Customers:resellers", "manager:Customer:write"})
+	 * @Groups({"get:Customer:collection","post:Customer:collection","get:Customers:resellers"})
 	 */
 	private string $lastName;
 	
@@ -247,7 +236,7 @@ class Customer implements UserInterface
 	 *     match=true,
 	 *     message="L'email doit être au format: test@live.fr …"
 	 * )
-	 * @Groups({"get:Customer:collection","post:Customer:collection","get:Customers:resellers", "manager:Customer:write"})
+	 * @Groups({"get:Customer:collection","post:Customer:collection","get:Customers:resellers"})
 	 */
 	private string $email;
 	
@@ -259,13 +248,13 @@ class Customer implements UserInterface
 	 *     message="mot de passe non valide, doit contenir la lettre majuscule et le numéro et les lettres "
 	 * )
 	 * @Assert\Length(min="5", max="20")
-	 * @Groups({"post:Customer:collection", "manager:Customer:write"})
+	 * @Groups({"post:Customer:collection"})
 	 */
 	private string $password;
 	
 	/**
 	 * @ORM\Column(type="array", length=255)
-	 * @Groups({"post:Customer:collection","get:Customers:resellers", "manager:Customer:write"})
+	 * @Groups({"post:Customer:collection","get:Customers:resellers"})
 	 */
 	private array $roles;
 	
@@ -278,9 +267,9 @@ class Customer implements UserInterface
 	
 	/**
 	 * @ORM\ManyToOne(targetEntity=Reseller::class, inversedBy="customers")
-	 * @Groups({"get:Customers:resellers","get:Customer:collection", "manager:Customer:write"})
+	 * @Groups({"get:Customers:resellers","get:Customer:collection"})
 	 */
-	private Reseller $resellers;
+	private Reseller $customersResellers;
 	
 	
 	public function __construct()
@@ -357,7 +346,7 @@ class Customer implements UserInterface
 	
 	public function getRoles(): array
 	{
-		return ['ROLE_USER'];
+		return $this->roles;
 	}
 	
 	
@@ -367,18 +356,6 @@ class Customer implements UserInterface
 		return $this;
 	}
 
-	public function getResellers(): Reseller
-	{
-		return $this->resellers;
-	}
-	
-	public function setResellers(Reseller $resellers): self
-	{
-		$this->resellers = $resellers;
-		
-		return $this;
-	}
-	
 	
 	public function getSalt(): ?string
 	{
@@ -395,4 +372,17 @@ class Customer implements UserInterface
 	{
 	}
 	
+
+	public function getCustomersResellers():Reseller
+	{
+		return $this->customersResellers;
+	}
+
+
+	public function setCustomersResellers(Reseller $customersResellers): self
+	{
+		$this->customersResellers = $customersResellers;
+
+		return $this;
+	}
 }

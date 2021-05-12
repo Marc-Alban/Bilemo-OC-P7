@@ -40,7 +40,7 @@ class CustomerFixtures extends Fixture implements DependentFixtureInterface
                     ->setEmail(strtolower($customer->getName()) . "@gmail.com");
                 $password = $this->passwordEncoder->encodePassword($customer, 'password');
                 $customer->setPassword($password)
-                    ->setResellers($this->getReference('reseller' . $i));
+                    ->setCustomersResellers($this->getReference('reseller' . $i));
                 $this->manager->persist($customer);
             }
         }

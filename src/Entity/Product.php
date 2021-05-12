@@ -2,13 +2,12 @@
 	
 namespace App\Entity;
 
-use App\Repository\ProductRepository;
 use Doctrine\ORM\Mapping as ORM;
 use ApiPlatform\Core\Annotation\ApiResource;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Serializer\Annotation\Groups;
-use ApiPlatform\Core\Annotation\ApiFilter;
-use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
+use App\Repository\ProductRepository;
+
 
 /**
  * @ORM\Entity(repositoryClass=ProductRepository::class)
@@ -16,7 +15,7 @@ use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
  *  attributes={
  *      "order"={"id":"DESC"},
  *      "pagination_items_per_page"=3,
- * },
+ * 	},
  *     itemOperations={
  *          "get_one_product"={
  *              "method"="GET",
@@ -25,7 +24,7 @@ use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
  *              "openapi_context"={
  *                   "summary" = "View the details of a product",
  *                   "description" = "Query to display a Bilemo product",
- *                   "tags" = {"One Product"}
+ *                   "tags" = {"One Product (Customer/Reseller/Admin)"}
  *              },
  *              "normalizationContext" = {
  *                  "groups"={
@@ -45,7 +44,7 @@ use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
  *              "openapi_context" = {
  *                  "summary" = "Put one product",
  *                  "description" = "Put by ID one product. Operation reserved for admin.",
- *                  "tags" = {"Put Product"}
+ *                  "tags" = {"Put Product (Admin)"}
  *              }
  *          },
  *          "patch" = {
@@ -65,7 +64,7 @@ use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
  *              "openapi_context" = {
  *                  "summary" = "Delete one product",
  *                  "description" = "Delete by ID one product. Operation reserved for admin.",
- *                  "tags" = {"Delete Product"}
+ *                  "tags" = {"Delete Product (Admin)"}
  *              }
  *          },
  *     },
@@ -81,7 +80,7 @@ use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
  *             "openapi_context"={
  *                  "summary" = "list of products",
  *                  "description" = "Get the list of all products",
- *                  "tags" = {"Get Products"}
+ *                  "tags" = {"Get Products (Customer/Reseller/Admin)"}
  *              },
  *          },
  *          "post_created_product" = {
@@ -95,12 +94,10 @@ use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
  *          "openapi_context" = {
  *              "summary" = "Creates a new product",
  *              "description" = "Creates a new Bilemo product. Operation reserved for admin.",
- *              "tags" = {"Add Product (roles : Admin)"}
- *          }
+ *              "tags" = {"Add Product (Admin)"}
+ *          	}
  *          },
  *     },
- * ),
- * @ApiFilter(SearchFilter::class, properties={"id": "exact", "price": "exact", "name": "partial"})
  * ),
  */
 class Product

@@ -39,7 +39,7 @@ final class DeleteCustomerListener implements EventSubscriberInterface
 
         $reseller = $this->security->getUser();
 
-        if ($customer->getResellers()->getId() !== $reseller->getId())
+        if ($customer->getCustomersResellers()->getId() !== $reseller->getId())
         {
             throw new AccessDeniedException("Prohibited operation. You can not delete other customer  if is not your.");
         }
