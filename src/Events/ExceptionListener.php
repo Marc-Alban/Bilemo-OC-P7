@@ -1,8 +1,6 @@
 <?php
 
-
 namespace App\Events;
-
 
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
@@ -26,10 +24,6 @@ class ExceptionListener
 		$event->setResponse($response);
 	}
 	
-	/**
-	 * @param \Throwable $exception
-	 * @return int
-	 */
 	public function getCodeError(\Throwable $exception): int
 	{
 		if (!$exception->getCode() && $exception instanceof HttpExceptionInterface) {
