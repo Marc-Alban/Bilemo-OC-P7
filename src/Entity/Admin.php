@@ -90,7 +90,7 @@ class Admin implements UserInterface
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
      */
-    private $id;
+    private int $id;
 
     /**
      * @ORM\Column(type="string", length=255)
@@ -102,7 +102,7 @@ class Admin implements UserInterface
      *     maxMessage="Le nom doit contenir au maximum '{{ limit }}' caractères"
      * )
      */
-    private $name;
+    private string $name;
 
     /**
      * @ORM\Column(type="string", length=255)
@@ -129,12 +129,12 @@ class Admin implements UserInterface
      *     maxMessage="Le password doit contenir au maximum '{{ limit }}' caractères"
      * )
      */
-    private $password;
+    private string $password;
 
     /**
      * @ORM\Column(type="array", length=255)
      */
-    private $roles;
+    private array $roles = ["ROLE_ADMIN"];
 
     /**
      * @ORM\Column(type="datetime")
@@ -151,7 +151,6 @@ class Admin implements UserInterface
 
     public function __construct()
     {
-        $this->setRoles(["ROLE_ADMIN"]);
         $this->createdAt = new \DateTime();
         $this->adminResellers = new ArrayCollection();
     }
@@ -214,7 +213,7 @@ class Admin implements UserInterface
     
 
 // -----------
-    public function getRoles(): ?array
+    public function getRoles(): array
     {
         return $this->roles;
     }

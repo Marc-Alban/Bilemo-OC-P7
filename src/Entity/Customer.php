@@ -21,7 +21,7 @@ use App\Repository\CustomerRepository;
  *    "get_one_Customer"=
  *    {
  *          "method" = "GET",
- *			"route_name" = "customer_one_reseller",
+ *			"path" = "/customers/{id}",
  *          "requirements" ={"id" = "\d+"},
  *          "security"="is_granted('ROLE_RESELLER')",
  *          "security_message"="Resource reserved for Reseller",
@@ -72,7 +72,7 @@ use App\Repository\CustomerRepository;
  *	"get_list_Customers" =
  *	{
  *		"method" = "GET",
- *		"route_name" = "relation_customer_to_reseller",
+ *		"path" = "/customers",
  *      "requirements"={"id" = "\d+"},
  *		"security" = "is_granted('ROLE_RESELLER')",
  *		"security_message" = "Collection reserved for Reseller",
@@ -256,7 +256,7 @@ class Customer implements UserInterface
 	 * @ORM\Column(type="array", length=255)
 	 * @Groups({"post:Customer:collection","get:Customers:resellers"})
 	 */
-	private array $roles;
+	private array $roles = ["ROLE_USER"];
 	
 	/**
 	 * @ORM\Column(type="datetime")
@@ -274,7 +274,6 @@ class Customer implements UserInterface
 	
 	public function __construct()
 	{
-		$this->setRoles(["ROLE_USER"]);
 		$this->createdAt = new \DateTime();
 	}
 	
@@ -350,7 +349,7 @@ class Customer implements UserInterface
 	}
 	
 	
-	public function setRoles(?array $roles): self
+	public function setRoles(array $roles): self
 	{
 		$this->roles = $roles;
 		return $this;

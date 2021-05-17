@@ -14,11 +14,9 @@ class OpenApiFactory implements OpenApiFactoryInterface
         $this->decorated = $decorated;
     }
 
-
     public function __invoke(array $context = []): OpenApi
     {
         $openApi = $this->decorated->__invoke($context);
-
 
         //Route Deleted ----
         foreach ($openApi->getPaths()->getPaths() as $key => $path){
@@ -41,7 +39,6 @@ class OpenApiFactory implements OpenApiFactoryInterface
                 $openApi->getPaths()->addPath($key,  $path->withPut(null));
             }
         }
-
 
         foreach ($openApi->getPaths()->getPaths() as $key => $path){
         //patch

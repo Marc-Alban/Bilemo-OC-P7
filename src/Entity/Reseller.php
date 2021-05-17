@@ -203,7 +203,7 @@ class Reseller implements UserInterface
 	/**
 	 * @ORM\Column(type="array", length=255)
 	 */
-	private array $roles;
+	private array $roles = ["ROLE_RESELLER"];
 
 
 	/**
@@ -220,7 +220,6 @@ class Reseller implements UserInterface
 
 	public function __construct()
 	{
-		$this->setRoles(["ROLE_RESELLER"]);
 		$this->createdAt = new \DateTime();
 		$this->customers = new ArrayCollection();
 	}
