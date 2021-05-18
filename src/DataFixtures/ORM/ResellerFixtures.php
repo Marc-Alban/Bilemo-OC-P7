@@ -16,9 +16,10 @@ class ResellerFixtures extends Fixture implements DependentFixtureInterface
     private \Faker\Generator $faker;
     private UserPasswordEncoderInterface $passwordEncoder;
 
-    public function __construct()
+    public function __construct(UserPasswordEncoderInterface $passwordEncoder)
     {
         $this->faker =  Factory::create('fr_FR');
+        $this->passwordEncoder = $passwordEncoder;
     }
 
     public function load(ObjectManager $manager): void

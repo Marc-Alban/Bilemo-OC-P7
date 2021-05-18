@@ -124,7 +124,7 @@ class Product
      * @ORM\Column(type="float")
      * @Assert\NotNull()
      * @Assert\Type(
-     *     type="integer",
+     *     type="float",
      *     message="le prix {{ value }} n'est pas valide, il doit être du type {{ type }}."
      * )
      * @Groups({"read:Products:item","read:Products:collection","post:Products:write","put:Products:write"})

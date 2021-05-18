@@ -9,7 +9,7 @@ use ApiPlatform\Core\Bridge\Doctrine\Orm\Extension\QueryItemExtensionInterface;
 use App\Entity\Customer;
 use Symfony\Component\Security\Core\Security;
 
-class searchCustomerLinkedToReseller implements QueryCollectionExtensionInterface, QueryItemExtensionInterface
+class SearchCustomerLinkedToReseller implements QueryCollectionExtensionInterface, QueryItemExtensionInterface
 {
     private Security $security;
 

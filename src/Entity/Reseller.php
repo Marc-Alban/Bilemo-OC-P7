@@ -23,14 +23,21 @@ use App\Repository\ResellerRepository;
 * },
 *    itemOperations=
 *    {
-*          "get" = {
-*              "controller" = NotFoundAction::class,
-*              "read" = false,
-*              "output" = false,
-*          "openapi_context"={
-*                  "summary" = "hidden",
+*          "get_one_reseller"={
+*              "method"="GET",
+*              "path"="/resellers/{id}",
+*              "requirements"={"id" = "\d+"},
+*              "openapi_context"={
+*                   "summary" = "View the details of a reseller",
+*                   "description" = "Query to display a Bilemo reseller",
+*                   "tags" = {"One Resller (Reseller/Admin)"}
 *              },
-*          },
+*              "normalizationContext" = {
+*                  "groups"={
+*                      "get:oneReseller:read"
+*                      }
+*                  },
+*              },
 *          "put" = {
 *              "controller" = NotFoundAction::class,
 *              "read" = false,
@@ -92,12 +99,9 @@ use App\Repository\ResellerRepository;
  *          {
  *             "method"="POST",
  *             "path"="/auth/login",
- *             "security" = "is_granted('ROLE_RESELLER')",
- *             "security_message" = "Operation reserved for Reseller",
- *             "path"="/auth/login",
  *             "openapi_context"={
  *                  "summary" = "Login (roles : Reseller)",
- *                  "description" = "Login a  Reseller with datas",
+ *                  "description" = "Log a Reseller",
  *                  "tags" = {"Login (Reseller/Admin)"},
  *                   "requestBody" = {
  *                       "content" = {
@@ -127,7 +131,7 @@ use App\Repository\ResellerRepository;
 *          },
 *          "openapi_context" = {
 *              "summary" = "Query to the list of Resellers",
-*              "description" = "This collection of resources displays the list of Bilemo Resellers. You can also search with a filter by name.",
+*              "description" = "This collection of resources displays the list of Bilemo Resellers.",
 *              "tags" = {"List of Resellers (Admin)"}
 *           }
 *      }
@@ -163,7 +167,7 @@ class Reseller implements UserInterface
      *     minMessage="Le nom doit contenir au minimum '{{ limit }}' caractères",
      *     maxMessage="Le nom doit contenir au maximum '{{ limit }}' caractères"
      * )
-     * @Groups({"get:Reseller:read"})
+     * @Groups({"get:Reseller:read","get:oneReseller:read"})
      */
     private string $name;
 
@@ -173,9 +177,9 @@ class Reseller implements UserInterface
      * @Assert\Regex(
      *     pattern="/^[a-zA-Z_.-]+@[a-zA-Z-]+\.[a-zA-Z-.]+$/",
      *     match=true,
-     *     message="L'email doit être au format: test@live.fr …"
+     *     message="L'email doit être au format: test@entreprise.fr …"
      * )
-     * @Groups({"get:Reseller:read"})
+     * @Groups({"get:Reseller:read","get:oneReseller:read"})
      */
     private string $email;
 
@@ -201,21 +205,21 @@ class Reseller implements UserInterface
     private \DateTimeInterface $createdAt;
 
     /**
-     * @ORM\Column(type="array", length=255)
-     * @Groups({"get:Reseller:read"})
+     * @ORM\Column(type="array", length=255, nullable=true)
+     * @Groups({"get:Reseller:read","get:oneReseller:read"})
      */
-    private array $roles = ["ROLE_RESELLER"];
+    private ?array $roles = ["ROLE_RESELLER"];
 
 
     /**
      * @ORM\OneToMany(targetEntity=Customer::class, mappedBy="customersResellers")
-     * @Groups({"get:Reseller:read"})
+     * @Groups({"get:Reseller:read","get:oneReseller:read"})
      */
     private ?Collection $customers;
 
     /**
      * @ORM\ManyToOne(targetEntity=Admin::class, inversedBy="adminResellers")
-     * @Groups({"get:Reseller:read"})
+     * @Groups({"get:Reseller:read","get:oneReseller:read"})
      */
     private Admin $admin;
 
@@ -280,12 +284,12 @@ class Reseller implements UserInterface
     }
 
 
-    public function getRoles(): array
+    public function getRoles(): ?array
     {
         return $this->roles;
     }
 
-    public function setRoles(array $roles): self
+    public function setRoles(?array $roles): self
     {
         $this->roles = $roles;
         return $this;

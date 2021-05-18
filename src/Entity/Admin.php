@@ -61,15 +61,14 @@ use App\Repository\AdminRepository;
 *                  "summary" = "hidden",
 *              },
 *          },
-*         "post"=
-*          {
+*         "post" = {
 *              "controller" = NotFoundAction::class,
 *              "read" = false,
 *              "output" = false,
 *          "openapi_context"={
 *                  "summary" = "hidden",
 *              },
-*           },
+*          },
 *   },
 * ),
 * @ORM\Entity(repositoryClass=AdminRepository::class)

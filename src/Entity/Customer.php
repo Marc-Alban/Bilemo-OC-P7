@@ -207,7 +207,7 @@ class Customer implements UserInterface
 
     /**
      * @ORM\Column(type="array", length=255)
-     * @Groups({"post:Customer:collection","get:Customers:resellers"})
+     * @Groups({"get:Customers:resellers"})
      */
     private array $roles = ["ROLE_USER"];
 
