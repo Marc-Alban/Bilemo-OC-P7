@@ -13,20 +13,19 @@ class AdminFixtures extends Fixture
     private \Faker\Generator $faker;
     private ObjectManager $manager;
     private UserPasswordEncoderInterface $passwordEncoder;
-    
-    public function __construct(UserPasswordEncoderInterface $passwordEncoder)
+
+    public function __construct()
     {
         $this->faker =  Factory::create('fr_FR');
-        $this->passwordEncoder = $passwordEncoder;
     }
 
-    public function load(ObjectManager $manager)
+    public function load(ObjectManager $manager): void
     {
         $this->manager = $manager;
         $this->loadAdmin();
     }
 
-    public function loadAdmin()
+    public function loadAdmin(): void
     {
         $genre = ["male","female"];
         $admin = new Admin($this->passwordEncoder);
@@ -38,6 +37,5 @@ class AdminFixtures extends Fixture
         $this->manager->flush();
 
         $this->addReference('admin', $admin);
- 
     }
 }

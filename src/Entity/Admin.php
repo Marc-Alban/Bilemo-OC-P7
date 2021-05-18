@@ -14,7 +14,6 @@ use App\Entity\Reseller;
 use ApiPlatform\Core\Action\NotFoundAction;
 use App\Repository\AdminRepository;
 
-
 /**
 * @ApiResource(
 *    itemOperations=
@@ -210,7 +209,7 @@ class Admin implements UserInterface
     public function eraseCredentials(): void
     {
     }
-    
+
 
 // -----------
     public function getRoles(): array
@@ -233,7 +232,7 @@ class Admin implements UserInterface
     public function setCreatedAt(\DateTimeInterface $createdAt): self
     {
         $this->createdAt = $createdAt;
-        
+
         return $this;
     }
 
@@ -251,7 +250,7 @@ class Admin implements UserInterface
             $this->adminResellers[] = $reseller;
             $reseller->setAdmin($this);
         }
-        
+
         return $this;
     }
 
@@ -264,5 +263,4 @@ class Admin implements UserInterface
         }
         return $this;
     }
-
 }

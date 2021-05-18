@@ -6,8 +6,6 @@ use App\Entity\Customer;
 use Doctrine\Persistence\ManagerRegistry;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 
-
-
 /**
  * @method Customer|null find($id, $lockMode = null, $lockVersion = null)
  * @method Customer|null findOneBy(array $criteria, array $orderBy = null)
@@ -22,8 +20,4 @@ class CustomerRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, Customer::class);
     }
-
 }
-
-
-
