@@ -30,7 +30,7 @@ use App\Repository\ResellerRepository;
 *              "openapi_context"={
 *                   "summary" = "View the details of a reseller",
 *                   "description" = "Query to display a Bilemo reseller",
-*                   "tags" = {"One Resller (Reseller/Admin)"}
+*                   "tags" = {"One Reseller (Reseller/Admin)"}
 *              },
 *              "normalizationContext" = {
 *                  "groups"={
@@ -208,7 +208,7 @@ class Reseller implements UserInterface
      * @ORM\Column(type="array", length=255, nullable=true)
      * @Groups({"get:Reseller:read","get:oneReseller:read"})
      */
-    private ?array $roles = ["ROLE_RESELLER"];
+    private array $roles = ["ROLE_RESELLER"];
 
 
     /**

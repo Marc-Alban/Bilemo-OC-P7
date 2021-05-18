@@ -79,7 +79,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  *             "openapi_context"={
  *                  "summary" = "list of products",
  *                  "description" = "Get the list of all products",
- *                  "tags" = {"Get Products (Reseller/Admin)"}
+ *                  "tags" = {"All Products (Reseller/Admin)"}
  *              },
  *          },
  *          "post_created_product" = {
