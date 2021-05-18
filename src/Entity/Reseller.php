@@ -64,7 +64,7 @@ use App\Repository\ResellerRepository;
 *             "path"="/auth/register",
 *             "openapi_context"={
 *                  "summary" = "Sign up  (Reseller)",
-*                  "description" = "Sign up a  Reseller with datas",
+*                  "description" = "Sign a  Reseller with datas",
 *                  "tags" = {"Register (Reseller/Admin)"},
 *                   "requestBody" = {
 *                       "content" = {
@@ -80,7 +80,7 @@ use App\Repository\ResellerRepository;
 *                                },
 *                               "example" = {
 *                                   "name"     = "name",
-*                                   "email"    = "reseller@orange.fr",
+*                                   "email"    = "name@entreprise.fr",
 *                                   "password" = "123@..text",
 *                               },
 *                           },
@@ -92,8 +92,9 @@ use App\Repository\ResellerRepository;
  *          {
  *             "method"="POST",
  *             "path"="/auth/login",
- *		       "security" = "is_granted('ROLE_RESELLER')",
- *		       "security_message" = "Operation reserved for Reseller",
+ *             "security" = "is_granted('ROLE_RESELLER')",
+ *             "security_message" = "Operation reserved for Reseller",
+ *             "path"="/auth/login",
  *             "openapi_context"={
  *                  "summary" = "Login (roles : Reseller)",
  *                  "description" = "Login a  Reseller with datas",
@@ -146,201 +147,202 @@ use App\Repository\ResellerRepository;
 class Reseller implements UserInterface
 {
 
-	/**
-	 * @ORM\Id
-	 * @ORM\GeneratedValue
-	 * @ORM\Column(type="integer")
-	 */
-	private int $id;
+    /**
+     * @ORM\Id
+     * @ORM\GeneratedValue
+     * @ORM\Column(type="integer")
+     */
+    private int $id;
 
-	/**
-	 * @ORM\Column(type="string", length=255)
-	 * @Assert\NotBlank()
-	 * @Assert\Length(
-	 *     min=3,
-	 *     max=30,
-	 *     minMessage="Le nom doit contenir au minimum '{{ limit }}' caractères",
-	 *     maxMessage="Le nom doit contenir au maximum '{{ limit }}' caractères"
-	 * )
-	 * @Groups({"register:Reseller:collection"})
-	 */
-	private string $name;
+    /**
+     * @ORM\Column(type="string", length=255)
+     * @Assert\NotBlank()
+     * @Assert\Length(
+     *     min=3,
+     *     max=30,
+     *     minMessage="Le nom doit contenir au minimum '{{ limit }}' caractères",
+     *     maxMessage="Le nom doit contenir au maximum '{{ limit }}' caractères"
+     * )
+     * @Groups({"get:Reseller:read"})
+     */
+    private string $name;
 
-	/**
-	 * @ORM\Column(type="string", length=255)
-	 * @Assert\NotBlank()
-	 * @Assert\Regex(
-	 *     pattern="/^[a-zA-Z_.-]+@[a-zA-Z-]+\.[a-zA-Z-.]+$/",
-	 *     match=true,
-	 *     message="L'email doit être au format: test@live.fr …"
-	 * )
-	 * @Groups({"register:Reseller:collection","login:Reseller:collection"})
-	 */
-	private string $email;
+    /**
+     * @ORM\Column(type="string", length=255)
+     * @Assert\NotBlank()
+     * @Assert\Regex(
+     *     pattern="/^[a-zA-Z_.-]+@[a-zA-Z-]+\.[a-zA-Z-.]+$/",
+     *     match=true,
+     *     message="L'email doit être au format: test@live.fr …"
+     * )
+     * @Groups({"get:Reseller:read"})
+     */
+    private string $email;
 
-	/**
-	 * @ORM\Column(type="string", length=255)
-	 * @Assert\NotBlank()
-	 * @Assert\Regex(
-	 *     pattern="/^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*\W).{6,}$/",
-	 *     message="mot de passe non valide, doit contenir la lettre majuscule et le numéro et les lettres "
-	 * )
-	 * @Assert\Length(
-	 *     min=3,
-	 *     max=30,
-	 *     minMessage="Le password doit contenir au minimum '{{ limit }}' caractères",
-	 *     maxMessage="Le password doit contenir au maximum '{{ limit }}' caractères"
-	 * )
-	 * @Groups({"register:Reseller:collection","login:Reseller:collection"})
-	 */
-	private string $password;
+    /**
+     * @ORM\Column(type="string", length=255)
+     * @Assert\NotBlank()
+     * @Assert\Regex(
+     *     pattern="/^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*\W).{6,}$/",
+     *     message="mot de passe non valide, doit contenir la lettre majuscule et le numéro et les lettres "
+     * )
+     * @Assert\Length(
+     *     min=3,
+     *     max=30,
+     *     minMessage="Le password doit contenir au minimum '{{ limit }}' caractères",
+     *     maxMessage="Le password doit contenir au maximum '{{ limit }}' caractères"
+     * )
+     */
+    private string $password;
 
-	/**
-	 * @ORM\Column(type="datetime")
-	 */
-	private \DateTimeInterface $createdAt;
+    /**
+     * @ORM\Column(type="datetime")
+     */
+    private \DateTimeInterface $createdAt;
 
-	/**
-	 * @ORM\Column(type="array", length=255)
-	 */
-	private array $roles = ["ROLE_RESELLER"];
-
-
-	/**
-	 * @ORM\OneToMany(targetEntity=Customer::class, mappedBy="customersResellers")
-	 */
-	private ?Collection $customers;
-
-	/**
-	 * @ORM\ManyToOne(targetEntity=Admin::class, inversedBy="adminResellers")
-	 */
-	private Admin $admin;
-		
+    /**
+     * @ORM\Column(type="array", length=255)
+     * @Groups({"get:Reseller:read"})
+     */
+    private array $roles = ["ROLE_RESELLER"];
 
 
-	public function __construct()
-	{
-		$this->createdAt = new \DateTime();
-		$this->customers = new ArrayCollection();
-	}
+    /**
+     * @ORM\OneToMany(targetEntity=Customer::class, mappedBy="customersResellers")
+     * @Groups({"get:Reseller:read"})
+     */
+    private ?Collection $customers;
 
-	public function getId(): ?int
-	{
-		return $this->id;
-	}
-
-	public function getName(): string
-	{
-		return $this->name;
-	}
-
-	public function setName(string $name): self
-	{
-		$this->name = $name;
-		
-		return $this;
-	}
-
-	public function getEmail(): string
-	{
-		return $this->email;
-	}
-
-	public function setEmail(string $email): self
-	{
-		$this->email = $email;
-		
-		return $this;
-	}
-
-	public function getPassword(): string
-	{
-		return $this->password;
-	}
-
-	public function setPassword(string $password): self
-	{
-		$this->password = $password;
-		return $this;
-	}
-
-	public function getCreatedAt(): \DateTimeInterface
-	{
-		return $this->createdAt;
-	}
-
-	public function setCreatedAt(\DateTimeInterface $createdAt): self
-	{
-		$this->createdAt = $createdAt;
-		
-		return $this;
-	}
+    /**
+     * @ORM\ManyToOne(targetEntity=Admin::class, inversedBy="adminResellers")
+     * @Groups({"get:Reseller:read"})
+     */
+    private Admin $admin;
 
 
-	public function getRoles(): array
-	{
-		return $this->roles;
-	}
 
-	public function setRoles(array $roles): self
-	{
-		$this->roles = $roles;
-		return $this;
-	}
+    public function __construct()
+    {
+        $this->createdAt = new \DateTime();
+        $this->customers = new ArrayCollection();
+    }
+
+    public function getId(): ?int
+    {
+        return $this->id;
+    }
+
+    public function getName(): string
+    {
+        return $this->name;
+    }
+
+    public function setName(string $name): self
+    {
+        $this->name = $name;
+
+        return $this;
+    }
+
+    public function getEmail(): string
+    {
+        return $this->email;
+    }
+
+    public function setEmail(string $email): self
+    {
+        $this->email = $email;
+
+        return $this;
+    }
+
+    public function getPassword(): string
+    {
+        return $this->password;
+    }
+
+    public function setPassword(string $password): self
+    {
+        $this->password = $password;
+        return $this;
+    }
+
+    public function getCreatedAt(): \DateTimeInterface
+    {
+        return $this->createdAt;
+    }
+
+    public function setCreatedAt(\DateTimeInterface $createdAt): self
+    {
+        $this->createdAt = $createdAt;
+
+        return $this;
+    }
 
 
-	public function getSalt(): ?string
-	{
-		return null;
-	}
+    public function getRoles(): array
+    {
+        return $this->roles;
+    }
+
+    public function setRoles(array $roles): self
+    {
+        $this->roles = $roles;
+        return $this;
+    }
 
 
-	public function getUsername(): ?string
-	{
-		return $this->email;
-	}
-
-	public function eraseCredentials(): void
-	{
-	}
-
-	public function getCustomers(): Collection
-	{
-		return $this->customers;
-	}
-
-	public function addCustomer(Customer $customer): self
-	{
-		if (!$this->customers->contains($customer)) {
-			$this->customers[] = $customer;
-			$customer->setCustomersResellers($this);
-		}
-		
-		return $this;
-	}
-
-	public function removeCustomer(Customer $customer): self
-	{
-		if ($this->customers->removeElement($customer)) {
-			// set the owning side to null (unless already changed)
-			if ($customer->getCustomersResellers() === $this) {
-				$customer->setCustomersResellers($this);
-			}
-		}
-		
-		return $this;
-	}
+    public function getSalt(): ?string
+    {
+        return null;
+    }
 
 
-	public function getAdmin()
-	{
-		return $this->admin;
-	}
+    public function getUsername(): ?string
+    {
+        return $this->email;
+    }
 
-	public function setAdmin($admin)
-	{
-		$this->admin = $admin;
+    public function eraseCredentials(): void
+    {
+    }
 
-		return $this;
-	}
+    public function getCustomers(): Collection
+    {
+        return $this->customers;
+    }
+
+    public function addCustomer(Customer $customer): self
+    {
+        if (!$this->customers->contains($customer)) {
+            $this->customers[] = $customer;
+            $customer->setCustomersResellers($this);
+        }
+
+        return $this;
+    }
+
+    public function removeCustomer(Customer $customer): self
+    {
+        if ($this->customers->removeElement($customer)) {
+            // set the owning side to null (unless already changed)
+            if ($customer->getCustomersResellers() === $this) {
+                $customer->setCustomersResellers($this);
+            }
+        }
+
+        return $this;
+    }
+
+    public function getAdmin(): Admin
+    {
+        return $this->admin;
+    }
+
+    public function setAdmin(Admin $admin): self
+    {
+        $this->admin = $admin;
+
+        return $this;
+    }
 }

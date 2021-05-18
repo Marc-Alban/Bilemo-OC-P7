@@ -35,25 +35,19 @@ final class DeleteCustomerListener implements EventSubscriberInterface
     {
         $method = $event->getRequest()->getMethod();
         $customer = $event->getControllerResult();
-        $reseller = $this->security->getUser();      
+        $reseller = $this->security->getUser();
 
-        if ($customer instanceof Customer && $customer->getcustomersResellers()->getId() !== $reseller->getId())
-        {throw new AccessDeniedException("Prohibited operation. You can not delete other customer  if is not your.");
-        }elseif($reseller->getRoles() !== ['ROLE_RESELLER']) 
-        {throw new AccessDeniedException("Prohibited operation. You can only delete a customer defined with the property ROLE_USER.");
-        }elseif( Request::METHOD_DELETE === $method)
-        {
-            $response = new JsonResponse(
-                ['message' => 'Customer has deleted !'],
-                '200',
-                ['Content-Type' => 'application/json']
-            ); 
-
+        if ($customer instanceof Customer && $customer->getcustomersResellers()->getId() !== $reseller->getId()) {
+            throw new AccessDeniedException("Prohibited operation. You can not delete other customer  if is not your.");
+        } elseif ($reseller->getRoles() !== ['ROLE_RESELLER']) {
+            throw new AccessDeniedException("Prohibited operation. You can only delete a customer defined with the property ROLE_USER.");
+        } elseif (Request::METHOD_DELETE === $method) {
+            $data = ['message' => 'Customer has deleted !','Content-Type' => 'application/json'];
+            $response = new JsonResponse($data, 200);
             $event->setResponse($response);
             $this->em->remove($customer);
             $this->em->flush();
-        }      
+        }
         return;
-
     }
 }

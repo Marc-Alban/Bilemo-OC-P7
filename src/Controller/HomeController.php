@@ -1,24 +1,20 @@
 <?php
-	
-	namespace App\Controller;
-	
-	use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-	use Symfony\Component\HttpFoundation\Response;
-	use Symfony\Component\Routing\Annotation\Route;
-	
-	
-	class HomeController extends AbstractController
-	{
-		
-		/**
-		 * @Route("/", name="security_connexion", methods={"GET"})
-		 * @param AuthenticationUtils $utils
-		 * @return Response
-		 */
-		public function connexion(): Response
-		{
-			return $this->render('home/index.html.twig', []);
-		}
-		
-		
-	}
+
+    namespace App\Controller;
+
+    use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+    use Symfony\Component\HttpFoundation\Response;
+    use Symfony\Component\Routing\Annotation\Route;
+
+class HomeController extends AbstractController
+{
+
+    /**
+     * @Route("/", name="security_connexion", methods={"GET"})
+     * @return Response
+     */
+    public function connexion(): Response
+    {
+        return $this->render('home/index.html.twig', []);
+    }
+}

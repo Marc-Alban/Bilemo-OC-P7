@@ -19,42 +19,41 @@ class OpenApiFactory implements OpenApiFactoryInterface
         $openApi = $this->decorated->__invoke($context);
 
         //Route Deleted ----
-        foreach ($openApi->getPaths()->getPaths() as $key => $path){
+        foreach ($openApi->getPaths()->getPaths() as $key => $path) {
             //get
-            if($path->getGet() && $path->getGet()->getSummary() === "hidden"){
-                $openApi->getPaths()->addPath($key,  $path->withGet(null));
+            if ($path->getGet() && $path->getGet()->getSummary() === "hidden") {
+                $openApi->getPaths()->addPath($key, $path->withGet(null));
             }
         }
 
-        foreach ($openApi->getPaths()->getPaths() as $key => $path){
+        foreach ($openApi->getPaths()->getPaths() as $key => $path) {
             //post
-            if($path->getPost() && $path->getPost()->getSummary() === "hidden"){
-                $openApi->getPaths()->addPath($key,  $path->withPost(null));
+            if ($path->getPost() && $path->getPost()->getSummary() === "hidden") {
+                $openApi->getPaths()->addPath($key, $path->withPost(null));
             }
         }
 
-        foreach ($openApi->getPaths()->getPaths() as $key => $path){
+        foreach ($openApi->getPaths()->getPaths() as $key => $path) {
             //put
-            if($path->getPut() && $path->getPut()->getSummary() === "hidden"){
-                $openApi->getPaths()->addPath($key,  $path->withPut(null));
+            if ($path->getPut() && $path->getPut()->getSummary() === "hidden") {
+                $openApi->getPaths()->addPath($key, $path->withPut(null));
             }
         }
 
-        foreach ($openApi->getPaths()->getPaths() as $key => $path){
+        foreach ($openApi->getPaths()->getPaths() as $key => $path) {
         //patch
-            if($path->getPatch() && $path->getPatch()->getSummary() === "hidden"){
-                $openApi->getPaths()->addPath($key,  $path->withPatch(null));
+            if ($path->getPatch() && $path->getPatch()->getSummary() === "hidden") {
+                $openApi->getPaths()->addPath($key, $path->withPatch(null));
             }
         }
 
-        foreach ($openApi->getPaths()->getPaths() as $key => $path){
+        foreach ($openApi->getPaths()->getPaths() as $key => $path) {
        //delete
-            if($path->getDelete() && $path->getDelete()->getSummary() === "hidden"){
-                $openApi->getPaths()->addPath($key,  $path->withDelete(null));
+            if ($path->getDelete() && $path->getDelete()->getSummary() === "hidden") {
+                $openApi->getPaths()->addPath($key, $path->withDelete(null));
             }
         }
-	    
+
         return $openApi;
     }
 }
-
