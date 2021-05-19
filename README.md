@@ -1,7 +1,7 @@
 BileMo
 Dépôt contenant le code pour le projet 7 du parcours développeur d'applications PHP d'OpenClassrooms.
 
-[![Codacy Badge](https://app.codacy.com/project/badge/Grade/a04585b6f6a84b7eb998a4b11efc1ae6)](https://www.codacy.com/gh/Marc-Alban/Bilmo-OC-P7/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=Marc-Alban/Bilmo-OC-P7&amp;utm_campaign=Badge_Grade)
+[![Codacy Badge](https://app.codacy.com/project/badge/Grade/a04585b6f6a84b7eb998a4b11efc1ae6)](https://www.codacy.com/gh/Marc-Alban/Bilemo-OC-P7/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=Marc-Alban/Bilemo-OC-P7&amp;utm_campaign=Badge_Grade)
 
 
 Instructions d'installation :
