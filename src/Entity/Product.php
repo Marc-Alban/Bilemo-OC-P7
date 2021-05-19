@@ -79,7 +79,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  *             "openapi_context"={
  *                  "summary" = "list of products",
  *                  "description" = "Get the list of all products",
- *                  "tags" = {"Get Products (Reseller/Admin)"}
+ *                  "tags" = {"All Products (Reseller/Admin)"}
  *              },
  *          },
  *          "post_created_product" = {
@@ -124,7 +124,7 @@ class Product
      * @ORM\Column(type="float")
      * @Assert\NotNull()
      * @Assert\Type(
-     *     type="integer",
+     *     type="float",
      *     message="le prix {{ value }} n'est pas valide, il doit être du type {{ type }}."
      * )
      * @Groups({"read:Products:item","read:Products:collection","post:Products:write","put:Products:write"})

@@ -7,13 +7,13 @@ use Symfony\Component\HttpKernel\KernelEvents;
 use Symfony\Component\HttpKernel\Event\ViewEvent;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use ApiPlatform\Core\EventListener\EventPriorities;
-use App\Entity\Customer;
+use App\Entity\Product;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 
-final class DeleteCustomerListener implements EventSubscriberInterface
+final class DeleteProductListener implements EventSubscriberInterface
 {
 
     private EntityManagerInterface $em;
@@ -27,26 +27,23 @@ final class DeleteCustomerListener implements EventSubscriberInterface
     public static function getSubscribedEvents(): array
     {
         return [
-            KernelEvents::VIEW => ['checkUserDeleted', EventPriorities::PRE_WRITE],
+            KernelEvents::VIEW => ['checkProductDeleted', EventPriorities::PRE_WRITE],
         ];
     }
 
-    public function checkUserDeleted(ViewEvent $event): void
+    public function checkProductDeleted(ViewEvent $event): void
     {
         $method = $event->getRequest()->getMethod();
-        $customer = $event->getControllerResult();
-        $reseller = $this->security->getUser();
-
-        if ($customer instanceof Customer && Request::METHOD_DELETE === $method) {
-            if ($customer->getCustomersResellers()->getId() !== $reseller->getId()) {
-                throw new AccessDeniedException("Prohibited operation. You can not delete other customer  if is not your.");
-            } elseif ($reseller->getRoles() !== ['ROLE_RESELLER']) {
+        $product = $event->getControllerResult();
+        $admin = $this->security->getUser();
+        if (Request::METHOD_DELETE === $method && $product instanceof Product) {
+            if ($admin->getRoles() !== ['ROLE_ADMIN']) {
                 throw new AccessDeniedException("Prohibited operation. You can only delete a customer defined with the property ROLE_USER.");
             }
-            $data = ['message' => 'Customer has deleted !','Content-Type' => 'application/json'];
+            $data = ['message' => 'Product has deleted !','Content-Type' => 'application/json'];
             $response = new JsonResponse($data, 200);
             $event->setResponse($response);
-            $this->em->remove($customer);
+            $this->em->remove($product);
             $this->em->flush();
         }
         return;

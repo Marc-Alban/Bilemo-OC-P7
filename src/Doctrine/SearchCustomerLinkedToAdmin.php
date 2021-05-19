@@ -6,11 +6,11 @@ use Doctrine\ORM\QueryBuilder;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Util\QueryNameGeneratorInterface;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Extension\QueryCollectionExtensionInterface;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Extension\QueryItemExtensionInterface;
+use App\Entity\Admin;
 use App\Entity\Customer;
-use App\Entity\Reseller;
 use Symfony\Component\Security\Core\Security;
 
-class SearchCustomerLinkedToReseller implements QueryCollectionExtensionInterface, QueryItemExtensionInterface
+class SearchCustomerLinkedToAdmin implements QueryCollectionExtensionInterface, QueryItemExtensionInterface
 {
     private Security $security;
 
@@ -31,11 +31,11 @@ class SearchCustomerLinkedToReseller implements QueryCollectionExtensionInterfac
 
     private function addWhere(QueryBuilder $queryBuilder, string $resourceClass): void
     {
-        $reseller =  $this->security->getUser();
-        if ($resourceClass === Customer::class && $reseller instanceof Reseller) {
+        $admin =  $this->security->getUser();
+        if ($resourceClass === Customer::class && $admin instanceof Admin) {
             $alias = $queryBuilder->getRootAliases()[0];
-            $queryBuilder->andWhere("$alias.customersResellers = :current_reseller")
-                         ->setParameter('current_reseller', $reseller->getId());
+            $queryBuilder->andWhere("$alias.customersAdmin = :current_admin")
+                         ->setParameter('current_admin', $admin->getId());
         }
     }
 }

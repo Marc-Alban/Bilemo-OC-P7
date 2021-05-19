@@ -14,9 +14,10 @@ class AdminFixtures extends Fixture
     private ObjectManager $manager;
     private UserPasswordEncoderInterface $passwordEncoder;
 
-    public function __construct()
+    public function __construct(UserPasswordEncoderInterface $passwordEncoder)
     {
         $this->faker =  Factory::create('fr_FR');
+        $this->passwordEncoder = $passwordEncoder;
     }
 
     public function load(ObjectManager $manager): void

@@ -3,12 +3,12 @@
     namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\Security\Core\User\UserInterface;
 use ApiPlatform\Core\Annotation\ApiResource;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use App\Repository\CustomerRepository;
+use App\Entity\Reseller;
 
 /**
  * @ApiResource(
@@ -114,14 +114,12 @@ use App\Repository\CustomerRepository;
  *                              "name" = {"type" = "string"},
  *                              "lastName" = {"type" = "string"},
  *                              "email" = {"type" = "string"},
- *                              "password" = {"type" = "string"}
  *                          },
  *                          "example" =
  *                          {
  *                              "name" : "totot",
  *                              "lastName" : "tatat",
  *                              "email" : "name@gmail.fr",
- *                              "password" : "123@..Text"
  *                          },
  *                      },
  *                  },
@@ -145,7 +143,7 @@ use App\Repository\CustomerRepository;
  *   message = "Il existe déjà un Customer avec ce prénom: {{ value }} ! "
  *)
  */
-class Customer implements UserInterface
+class Customer
 {
     /**
      * @ORM\Id
@@ -194,20 +192,8 @@ class Customer implements UserInterface
     private string $email;
 
     /**
-     * @ORM\Column(type="string", length=255)
-     * @Assert\NotNull()
-     * @Assert\Regex(
-     *     pattern="/^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*\W).{6,}$/",
-     *     message="mot de passe non valide, doit contenir la lettre majuscule et le numéro et les lettres "
-     * )
-     * @Assert\Length(min="5", max="20")
-     * @Groups({"post:Customer:collection"})
-     */
-    private string $password;
-
-    /**
      * @ORM\Column(type="array", length=255)
-     * @Groups({"post:Customer:collection","get:Customers:resellers"})
+     * @Groups({"get:Customers:resellers"})
      */
     private array $roles = ["ROLE_USER"];
 
@@ -220,9 +206,18 @@ class Customer implements UserInterface
 
     /**
      * @ORM\ManyToOne(targetEntity=Reseller::class, inversedBy="customers")
-     * @Groups({"get:Customers:resellers","get:Customer:collection"})
+     * @ORM\JoinColumn(nullable=true)
+     * @Groups({"get:Customers:resellers","get:Customer:collection", "post:Customer:collection"})
      */
-    private Reseller $customersResellers;
+    private ?Reseller $customersResellers;
+
+    /**
+     * @ORM\ManyToOne(targetEntity=Admin::class, inversedBy="adminCustomer")
+     * @ORM\JoinColumn(nullable=true)
+     * @Groups({"get:Reseller:read","get:oneReseller:read","post:Customer:collection"})
+     */
+    private ?Admin $customersAdmin;
+
 
 
     public function __construct()
@@ -272,17 +267,6 @@ class Customer implements UserInterface
         return $this;
     }
 
-    public function getPassword(): string
-    {
-        return $this->password;
-    }
-
-    public function setPassword(string $password): self
-    {
-        $this->password = $password;
-
-        return $this;
-    }
 
     public function getCreatedAt(): \DateTimeInterface
     {
@@ -309,31 +293,31 @@ class Customer implements UserInterface
     }
 
 
-    public function getSalt(): ?string
-    {
-        return null;
-    }
-
-
-    public function getUsername(): ?string
-    {
-        return $this->email;
-    }
-
-    public function eraseCredentials(): void
-    {
-    }
-
-
-    public function getCustomersResellers(): Reseller
+    public function getCustomersResellers(): ?Reseller
     {
         return $this->customersResellers;
     }
 
 
-    public function setCustomersResellers(Reseller $customersResellers): self
+    public function setCustomersResellers(?Reseller $customersResellers): self
     {
         $this->customersResellers = $customersResellers;
+
+        return $this;
+    }
+
+
+
+
+    public function getCustomersAdmin(): ?Admin
+    {
+        return $this->customersAdmin;
+    }
+
+
+    public function setCustomersAdmin(?Admin $customersAdmin): self
+    {
+        $this->customersAdmin = $customersAdmin;
 
         return $this;
     }

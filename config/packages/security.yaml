@@ -6,12 +6,16 @@ security:
             entity:
                 class: App\Entity\Reseller
                 property: email
+        admin:
+            entity:
+                class: App\Entity\Admin
+                property: email
+        all_users:
+            chain:
+                providers: ['admin','reseller']
 
     encoders:
         App\Entity\Reseller:
-            algorithm: bcrypt
-            cost: 15
-        App\Entity\Customer:
             algorithm: bcrypt
             cost: 15
         App\Entity\Admin:
@@ -28,6 +32,7 @@ security:
 
         login:
             pattern: ^/api/auth/login
+            provider: all_users
             stateless: true
             login_throttling:
                 max_attempts: 5
@@ -37,10 +42,11 @@ security:
                 check_path:               /api/auth/login
                 success_handler:          lexik_jwt_authentication.handler.authentication_success
                 failure_handler:          lexik_jwt_authentication.handler.authentication_failure
+
         api:
             pattern: ^/api
             stateless: true
-            provider: reseller
+            provider: all_users
             guard:
                 authenticators:
                     - lexik_jwt_authentication.jwt_token_authenticator
