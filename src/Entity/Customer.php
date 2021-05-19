@@ -3,7 +3,6 @@
     namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\Security\Core\User\UserInterface;
 use ApiPlatform\Core\Annotation\ApiResource;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Serializer\Annotation\Groups;
@@ -114,14 +113,12 @@ use App\Repository\CustomerRepository;
  *                              "name" = {"type" = "string"},
  *                              "lastName" = {"type" = "string"},
  *                              "email" = {"type" = "string"},
- *                              "password" = {"type" = "string"}
  *                          },
  *                          "example" =
  *                          {
  *                              "name" : "totot",
  *                              "lastName" : "tatat",
  *                              "email" : "name@gmail.fr",
- *                              "password" : "123@..Text"
  *                          },
  *                      },
  *                  },
@@ -145,7 +142,7 @@ use App\Repository\CustomerRepository;
  *   message = "Il existe déjà un Customer avec ce prénom: {{ value }} ! "
  *)
  */
-class Customer implements UserInterface
+class Customer
 {
     /**
      * @ORM\Id
@@ -192,18 +189,6 @@ class Customer implements UserInterface
      * @Groups({"get:Customer:collection","post:Customer:collection","get:Customers:resellers"})
      */
     private string $email;
-
-    /**
-     * @ORM\Column(type="string", length=255)
-     * @Assert\NotNull()
-     * @Assert\Regex(
-     *     pattern="/^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*\W).{6,}$/",
-     *     message="mot de passe non valide, doit contenir la lettre majuscule et le numéro et les lettres "
-     * )
-     * @Assert\Length(min="5", max="20")
-     * @Groups({"post:Customer:collection"})
-     */
-    private string $password;
 
     /**
      * @ORM\Column(type="array", length=255)
@@ -272,17 +257,6 @@ class Customer implements UserInterface
         return $this;
     }
 
-    public function getPassword(): string
-    {
-        return $this->password;
-    }
-
-    public function setPassword(string $password): self
-    {
-        $this->password = $password;
-
-        return $this;
-    }
 
     public function getCreatedAt(): \DateTimeInterface
     {
@@ -306,22 +280,6 @@ class Customer implements UserInterface
     {
         $this->roles = $roles;
         return $this;
-    }
-
-
-    public function getSalt(): ?string
-    {
-        return null;
-    }
-
-
-    public function getUsername(): ?string
-    {
-        return $this->email;
-    }
-
-    public function eraseCredentials(): void
-    {
     }
 
 

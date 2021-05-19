@@ -18,9 +18,6 @@ security:
         App\Entity\Reseller:
             algorithm: bcrypt
             cost: 15
-        App\Entity\Customer:
-            algorithm: bcrypt
-            cost: 15
         App\Entity\Admin:
             algorithm: bcrypt
             cost: 15
