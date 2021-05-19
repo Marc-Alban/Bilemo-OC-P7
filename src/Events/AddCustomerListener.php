@@ -35,11 +35,11 @@ class AddCustomerListener implements EventSubscriberInterface
         $reseller = $this->security->getUser();
         $method = $event->getRequest()->getMethod();
         if ($result instanceof Customer && $method === Request::METHOD_POST) {
-            if($reseller->getRoles() === ['ROLE_RESELLER']){
+            if ($reseller->getRoles() === ['ROLE_RESELLER']) {
                 $result->setCustomersResellers($this->security->getUser());
-                $result->setCustomersAdmin(NULL);
-            }elseif($reseller->getRoles() === ['ROLE_ADMIN']){
-                $result->setCustomersResellers(NULL);
+                $result->setCustomersAdmin(null);
+            } elseif ($reseller->getRoles() === ['ROLE_ADMIN']) {
+                $result->setCustomersResellers(null);
                 $result->setCustomersAdmin($this->security->getUser());
             }
         }

@@ -10,7 +10,6 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use App\Repository\CustomerRepository;
 use App\Entity\Reseller;
 
-
 /**
  * @ApiResource(
  *   attributes={

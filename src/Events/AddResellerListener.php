@@ -27,8 +27,8 @@ class AddResellerListener implements EventSubscriberInterface
         $result = $event->getControllerResult();
         $method = $event->getRequest()->getMethod();
         if ($result instanceof Reseller && $method === Request::METHOD_POST) {
-            if($result->getRoles() === ['ROLE_RESELLER']){
-                $result->setAdmin(NULL);
+            if ($result->getRoles() === ['ROLE_RESELLER']) {
+                $result->setAdmin(null);
             }
         }
     }
