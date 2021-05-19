@@ -8,6 +8,8 @@ use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use App\Repository\CustomerRepository;
+use App\Entity\Reseller;
+
 
 /**
  * @ApiResource(
@@ -205,9 +207,18 @@ class Customer
 
     /**
      * @ORM\ManyToOne(targetEntity=Reseller::class, inversedBy="customers")
-     * @Groups({"get:Customers:resellers","get:Customer:collection"})
+     * @ORM\JoinColumn(nullable=true)
+     * @Groups({"get:Customers:resellers","get:Customer:collection", "post:Customer:collection"})
      */
-    private Reseller $customersResellers;
+    private ?Reseller $customersResellers;
+
+    /**
+     * @ORM\ManyToOne(targetEntity=Admin::class, inversedBy="adminCustomer")
+     * @ORM\JoinColumn(nullable=true)
+     * @Groups({"get:Reseller:read","get:oneReseller:read","post:Customer:collection"})
+     */
+    private ?Admin $customersAdmin;
+
 
 
     public function __construct()
@@ -283,15 +294,31 @@ class Customer
     }
 
 
-    public function getCustomersResellers(): Reseller
+    public function getCustomersResellers(): ?Reseller
     {
         return $this->customersResellers;
     }
 
 
-    public function setCustomersResellers(Reseller $customersResellers): self
+    public function setCustomersResellers(?Reseller $customersResellers): self
     {
         $this->customersResellers = $customersResellers;
+
+        return $this;
+    }
+
+
+
+
+    public function getCustomersAdmin(): ?Admin
+    {
+        return $this->customersAdmin;
+    }
+
+
+    public function setCustomersAdmin(?Admin $customersAdmin): self
+    {
+        $this->customersAdmin = $customersAdmin;
 
         return $this;
     }

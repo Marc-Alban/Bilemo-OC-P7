@@ -31,8 +31,7 @@ class PasswordEncoderListener implements EventSubscriberInterface
     {
         $result = $event->getControllerResult();
         $method = $event->getRequest()->getMethod();
-
-        if ($result instanceof Reseller || $result instanceof Customer && $method === "POST") {
+        if ($result instanceof Reseller && $method === "POST") {
             $hash = $this->encoder->encodePassword($result, $result->getPassword());
             $result->setPassword($hash);
         }

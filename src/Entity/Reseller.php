@@ -141,11 +141,11 @@ use App\Repository\ResellerRepository;
 *
 * @UniqueEntity(
 *     fields={"email"},
-*     message="Il existe déjà un customer avec cette email: '{{ value }}' ! "
+*     message="Il existe déjà un reseller avec cette email: '{{ value }}' ! "
 * )
 * @UniqueEntity(
 *     fields={"name"},
-*     message="Il existe déjà un customer avec ce nom: {{ value }} ! "
+*     message="Il existe déjà un reseller avec ce nom: {{ value }} ! "
 * )
 */
 class Reseller implements UserInterface
@@ -221,7 +221,7 @@ class Reseller implements UserInterface
      * @ORM\ManyToOne(targetEntity=Admin::class, inversedBy="adminResellers")
      * @Groups({"get:Reseller:read","get:oneReseller:read"})
      */
-    private Admin $admin;
+    private ?Admin $admin;
 
 
 
@@ -338,12 +338,12 @@ class Reseller implements UserInterface
         return $this;
     }
 
-    public function getAdmin(): Admin
+    public function getAdmin(): ?Admin
     {
         return $this->admin;
     }
 
-    public function setAdmin(Admin $admin): self
+    public function setAdmin(?Admin $admin): self
     {
         $this->admin = $admin;
 

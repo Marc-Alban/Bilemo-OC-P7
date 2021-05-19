@@ -74,11 +74,11 @@ use App\Repository\AdminRepository;
 * @ORM\Entity(repositoryClass=AdminRepository::class)
 * @UniqueEntity(
 *     fields={"email"},
-*     message="Il existe déjà un customer avec cette email: '{{ value }}' ! "
+*     message="Il existe déjà un admin avec cette email: '{{ value }}' ! "
 * )
 * @UniqueEntity(
 *     fields={"name"},
-*     message="Il existe déjà un customer avec ce nom: {{ value }} ! "
+*     message="Il existe déjà un admin avec ce nom: {{ value }} ! "
 * )
  */
 class Admin implements UserInterface
@@ -144,6 +144,11 @@ class Admin implements UserInterface
      * @ORM\OneToMany(targetEntity=Reseller::class, mappedBy="admin")
      */
     private ?Collection $adminResellers;
+
+    /**
+     * @ORM\OneToMany(targetEntity=Customer::class, mappedBy="CustomersAdmin")
+     */
+    private ?Collection $adminCustomer;
 
 
 
@@ -235,9 +240,7 @@ class Admin implements UserInterface
         return $this;
     }
 
-    /**
-     * @return Collection|Reseller[]
-     */
+
     public function getAdminResellers(): ?Collection
     {
         return $this->adminResellers;
@@ -258,6 +261,32 @@ class Admin implements UserInterface
         if ($this->adminResellers->removeElement($reseller)) {
             if ($reseller->getAdmin() === $this) {
                 $reseller->setAdmin($this);
+            }
+        }
+        return $this;
+    }
+
+
+    public function getAdminCustomer(): ?Collection
+    {
+        return $this->adminCustomer;
+    }
+
+    public function addAdminCustomer(Customer $reseller): self
+    {
+        if (!$this->adminCustomer->contains($reseller)) {
+            $this->adminCustomer[] = $reseller;
+            $reseller->setCustomersAdmin($this);
+        }
+
+        return $this;
+    }
+
+    public function removeAdminCustomer(Customer $reseller): self
+    {
+        if ($this->adminCustomer->removeElement($reseller)) {
+            if ($reseller->getCustomersAdmin() === $this) {
+                $reseller->setCustomersAdmin($this);
             }
         }
         return $this;

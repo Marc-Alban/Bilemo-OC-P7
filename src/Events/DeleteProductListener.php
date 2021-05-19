@@ -36,12 +36,10 @@ final class DeleteProductListener implements EventSubscriberInterface
         $method = $event->getRequest()->getMethod();
         $product = $event->getControllerResult();
         $admin = $this->security->getUser();
-
-        if ($admin->getRoles() !== ['ROLE_ADMIN'] && $product instanceof Product) {
-            throw new AccessDeniedException("Prohibited operation. You can only delete a customer defined with the property ROLE_USER.");
-        }
-
         if (Request::METHOD_DELETE === $method && $product instanceof Product) {
+            if ($admin->getRoles() !== ['ROLE_ADMIN']) {
+            throw new AccessDeniedException("Prohibited operation. You can only delete a customer defined with the property ROLE_USER.");
+            }
             $data = ['message' => 'Product has deleted !','Content-Type' => 'application/json'];
             $response = new JsonResponse($data, 200);
             $event->setResponse($response);
