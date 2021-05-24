@@ -26,11 +26,13 @@ use App\Repository\ResellerRepository;
 *          "get_one_reseller"={
 *              "method"="GET",
 *              "path"="/resellers/{id}",
-*              "requirements"={"id" = "\d+"},
+*             "requirements" = {"id" = "\d+"},
+*             "security"="is_granted('ROLE_Admin')",
+*             "security_message"="Operation reserved for Admin",
 *              "openapi_context"={
 *                   "summary" = "View the details of a reseller",
 *                   "description" = "Query to display a Bilemo reseller",
-*                   "tags" = {"One Reseller (Reseller/Admin)"}
+*                   "tags" = {"One Reseller (Admin)"}
 *              },
 *              "normalizationContext" = {
 *                  "groups"={
@@ -126,6 +128,8 @@ use App\Repository\ResellerRepository;
 *      "get_Resellers"={
 *          "method"="GET",
 *          "path"="/resellers",
+*          "security"="is_granted('ROLE_Admin')",
+*          "security_message"="Operation reserved for Admin",
 *          "normalizationContext"={
 *              "groups"={"get:Reseller:read"}
 *          },

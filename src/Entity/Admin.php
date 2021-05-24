@@ -146,7 +146,7 @@ class Admin implements UserInterface
     private ?Collection $adminResellers;
 
     /**
-     * @ORM\OneToMany(targetEntity=Customer::class, mappedBy="CustomersAdmin")
+     * @ORM\OneToMany(targetEntity=Customer::class, mappedBy="customersAdmin")
      */
     private ?Collection $adminCustomer;
 
