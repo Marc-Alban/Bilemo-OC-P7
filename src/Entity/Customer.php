@@ -31,7 +31,7 @@ use App\Entity\Reseller;
  *          "openapi_context" = {
  *              "summary" = "Consult the details of a Customer linked to a resellers",
  *              "description" = "Query by identifier to consult Customer's informations. Resource reserved for Reseller.",
- *              "tags" = {"Single Customer (Reseller/Admin)"}
+ *              "tags" = {"One Customer (Reseller/Admin)"}
  *          }
  *      },
  *     "put" =
@@ -100,7 +100,7 @@ use App\Entity\Reseller;
  *      {
  *          "summary" = "Creates a new Customer with your resellers reference",
  *          "description" = "Operation reserved for Reseller. Defines automatically the new Customer with your resellers reference.",
- *          "tags" = {"Add Customer (Reseller)"},
+ *          "tags" = {"Add Customer (Reseller/Admin)"},
  *          "requestBody" =
  *          {
  *              "content" =

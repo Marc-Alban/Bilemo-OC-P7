@@ -181,12 +181,6 @@
     "nikic/php-parser": {
         "version": "v4.10.4"
     },
-    "paragonie/random_compat": {
-        "version": "v9.99.100"
-    },
-    "paragonie/sodium_compat": {
-        "version": "v1.16.0"
-    },
     "phpdocumentor/reflection-common": {
         "version": "2.2.0"
     },
