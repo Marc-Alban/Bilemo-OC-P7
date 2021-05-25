@@ -63,7 +63,7 @@ use App\Entity\Reseller;
  *      {
  *          "summary" = "Delete one Customer",
  *          "description" = "Delete by ID one Customer. Operation reserved for Reseller.",
- *          "tags" = {"Remove Customer (Reseller/Admin)"}
+ *          "tags" = {"Remove Customer (Reseller)"}
  *      }
  *    },
  * },
@@ -100,7 +100,7 @@ use App\Entity\Reseller;
  *      {
  *          "summary" = "Creates a new Customer with your resellers reference",
  *          "description" = "Operation reserved for Reseller. Defines automatically the new Customer with your resellers reference.",
- *          "tags" = {"Add Customer (Reseller/Admin)"},
+ *          "tags" = {"Add Customer (Reseller)"},
  *          "requestBody" =
  *          {
  *              "content" =

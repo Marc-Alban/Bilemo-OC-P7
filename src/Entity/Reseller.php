@@ -72,8 +72,8 @@ use App\Repository\ResellerRepository;
 *             "method"="POST",
 *             "path"="/auth/register",
 *             "openapi_context"={
-*                  "summary" = "Sign up  (Reseller)",
-*                  "description" = "Sign a  Reseller with datas",
+*                  "summary" = "Sign up (Reseller)",
+*                  "description" = "Sign a Reseller with datas",
 *                  "tags" = {"Register (Reseller/Admin)"},
 *                   "requestBody" = {
 *                       "content" = {
@@ -102,8 +102,8 @@ use App\Repository\ResellerRepository;
  *             "method"="POST",
  *             "path"="/auth/login",
  *             "openapi_context"={
- *                  "summary" = "Login (roles : Reseller)",
- *                  "description" = "Log a Reseller",
+ *                  "summary" = "Login",
+ *                  "description" = "Log a Reseller/Admin",
  *                  "tags" = {"Login (Reseller/Admin)"},
  *                   "requestBody" = {
  *                       "content" = {
