@@ -27,7 +27,7 @@ use App\Repository\ResellerRepository;
 *              "method"="GET",
 *              "path"="/resellers/{id}",
 *             "requirements" = {"id" = "\d+"},
-*             "security"="is_granted('ROLE_Admin')",
+*             "security"="is_granted('ROLE_ADMIN')",
 *             "security_message"="Operation reserved for Admin",
 *              "openapi_context"={
 *                   "summary" = "View the details of a reseller",
@@ -125,10 +125,10 @@ use App\Repository\ResellerRepository;
  *                   },
  *              },
  *          },
-*      "get_Resellers"={
+*      "get_list_Reseller"={
 *          "method"="GET",
 *          "path"="/resellers",
-*          "security"="is_granted('ROLE_Admin')",
+*          "security"="is_granted('ROLE_ADMIN')",
 *          "security_message"="Operation reserved for Admin",
 *          "normalizationContext"={
 *              "groups"={"get:Reseller:read"}

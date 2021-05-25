@@ -211,14 +211,6 @@ class Customer
      */
     private ?Reseller $customersResellers;
 
-    /**
-     * @ORM\ManyToOne(targetEntity=Admin::class, inversedBy="adminCustomer")
-     * @ORM\JoinColumn(nullable=true)
-     * @Groups({"get:Reseller:read","get:oneReseller:read","post:Customer:collection"})
-     */
-    private ?Admin $customersAdmin;
-
-
 
     public function __construct()
     {
@@ -306,19 +298,4 @@ class Customer
         return $this;
     }
 
-
-
-
-    public function getCustomersAdmin(): ?Admin
-    {
-        return $this->customersAdmin;
-    }
-
-
-    public function setCustomersAdmin(?Admin $customersAdmin): self
-    {
-        $this->customersAdmin = $customersAdmin;
-
-        return $this;
-    }
 }

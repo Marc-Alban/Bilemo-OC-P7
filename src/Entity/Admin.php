@@ -145,10 +145,6 @@ class Admin implements UserInterface
      */
     private ?Collection $adminResellers;
 
-    /**
-     * @ORM\OneToMany(targetEntity=Customer::class, mappedBy="customersAdmin")
-     */
-    private ?Collection $adminCustomer;
 
 
 
@@ -267,28 +263,4 @@ class Admin implements UserInterface
     }
 
 
-    public function getAdminCustomer(): ?Collection
-    {
-        return $this->adminCustomer;
-    }
-
-    public function addAdminCustomer(Customer $reseller): self
-    {
-        if (!$this->adminCustomer->contains($reseller)) {
-            $this->adminCustomer[] = $reseller;
-            $reseller->setCustomersAdmin($this);
-        }
-
-        return $this;
-    }
-
-    public function removeAdminCustomer(Customer $reseller): self
-    {
-        if ($this->adminCustomer->removeElement($reseller)) {
-            if ($reseller->getCustomersAdmin() === $this) {
-                $reseller->setCustomersAdmin($this);
-            }
-        }
-        return $this;
-    }
 }
