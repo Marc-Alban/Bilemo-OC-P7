@@ -43,8 +43,8 @@ final class DeleteCustomerListener implements EventSubscriberInterface
             } elseif ($reseller->getRoles() !== ['ROLE_RESELLER']) {
                 throw new AccessDeniedException("Prohibited operation. You can only delete a customer defined with the property ROLE_USER.");
             }
-            $data = ['message' => 'Customer has deleted !','Content-Type' => 'application/json'];
-            $response = new JsonResponse($data, 200);
+            $data = [];
+            $response = new JsonResponse($data, 204);
             $event->setResponse($response);
             $this->em->remove($customer);
             $this->em->flush();
