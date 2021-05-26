@@ -4,6 +4,7 @@ namespace App\Events;
 
 use App\Entity\Customer;
 use App\Entity\Reseller;
+use App\Entity\Admin;
 use Exception;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Core\Security;
@@ -34,13 +35,13 @@ class AddCustomerListener implements EventSubscriberInterface
     {
         $result = $event->getControllerResult();
         $method = $event->getRequest()->getMethod();
-        $reseller = $this->security->getUser();
+        $user = $this->security->getUser();
         $method = $event->getRequest()->getMethod();
-        if($reseller instanceof Reseller === false && $method === Request::METHOD_POST){
-            throw new Exception("Forbiden: Just Reseller can created a Customer", 403);         
-        }
-        if ($result instanceof Customer && $method === Request::METHOD_POST) {
-            $result->setCustomersResellers($reseller);
+        if ($user instanceof Admin) {
+            throw new Exception("Admin can't create customer",403);
+         }
+        if ($user instanceof Reseller === true && $result instanceof Customer && $method === Request::METHOD_POST) {
+            $result->setCustomersResellers($user);
         }
     }
 }
