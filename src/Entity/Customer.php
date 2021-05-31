@@ -1,6 +1,6 @@
 <?php
 
-    namespace App\Entity;
+namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use ApiPlatform\Core\Annotation\ApiResource;
@@ -34,14 +34,45 @@ use App\Entity\Reseller;
  *              "tags" = {"One Customer (Reseller/Admin)"}
  *          }
  *      },
- *     "put" =
+ *     "put_one_customer" =
  *     {
- *       "controller" = NotFoundAction::class,
- *       "read" = false,
- *       "output" = false,
- *       "openapi_context"={
- *           "summary" = "hidden",
- *       },
+ *          "method" = "PUT",
+ *          "path" = "/customers/{id}",
+ *          "requirements" ={"id" = "\d+"},
+ *          "security"="is_granted('ROLE_RESELLER')",
+ *          "security_message"="Resource reserved for Reseller",
+ *          "normalization_context"={
+ *              "groups"={"put:Customers:resellers"}
+ *          },
+ *          "openapi_context" = {
+ *              "summary" = "Put the details of a Customer linked to a resellers",
+ *              "description" = "Query by identifier to update Customer's informations. Resource reserved for Reseller.",
+ *              "tags" = {"Put Customer (Reseller)"}
+ *          },
+ *          "requestBody" =
+ *          {
+ *              "content" =
+ *              {
+ *                  "application/json" =
+ *                  {
+ *                      "schema" =
+ *                      {
+ *                          "type" = "object","properties" =
+ *                          {
+ *                              "name" = {"type" = "string"},
+ *                              "lastName" = {"type" = "string"},
+ *                              "email" = {"type" = "string"}
+ *                          },
+ *                          "example" =
+ *                          {
+ *                               "name": "totot",
+ *                               "lastName": "tatat",
+ *                               "email": "name@gmail.fr"
+ *                          },
+ *                      },
+ *                  },
+ *              },
+ *          },
  *     },
  *    "patch" =
  *    {
@@ -63,7 +94,7 @@ use App\Entity\Reseller;
  *      {
  *          "summary" = "Delete one Customer",
  *          "description" = "Delete by ID one Customer. Operation reserved for Reseller.",
- *          "tags" = {"Remove Customer (Reseller/Admin)"}
+ *          "tags" = {"Remove Customer (Reseller)"}
  *      }
  *    },
  * },
@@ -100,7 +131,7 @@ use App\Entity\Reseller;
  *      {
  *          "summary" = "Creates a new Customer with your resellers reference",
  *          "description" = "Operation reserved for Reseller. Defines automatically the new Customer with your resellers reference.",
- *          "tags" = {"Add Customer (Reseller/Admin)"},
+ *          "tags" = {"Add Customer (Reseller)"},
  *          "requestBody" =
  *          {
  *              "content" =
@@ -156,26 +187,36 @@ class Customer
     /**
      * @ORM\Column(type="string", length=255)
      * @Assert\NotNull()
+     * @Assert\Regex(
+     *     pattern="/^([a-zA-Z'àâéèêôùûçÀÂÉÈÔÙÛÇ[:blank:]-]{1,75})$/",
+     *     match=true,
+     *     message="Le firstName doit être au format: Millet,millet, pas de caractères spéciaux autorisés…"
+     * )
      * @Assert\Length(
      *     min=3,
      *     max=15,
      *     minMessage="Le nom doit contenir au minimum {{ limit }} caractères",
      *     maxMessage="Le nom doit contenir au maximum {{ limit }} caractères"
      * )
-     * @Groups({"get:Customer:collection","post:Customer:collection","get:Customers:resellers"})
+     * @Groups({"get:Customer:collection","post:Customer:collection","get:Customers:resellers","put:Customers:resellers"})
      */
     private string $name;
 
     /**
      * @ORM\Column(type="string", length=255)
      * @Assert\NotNull()
+     * @Assert\Regex(
+     *     pattern="/^([a-zA-Z'àâéèêôùûçÀÂÉÈÔÙÛÇ[:blank:]-]{1,75})$/",
+     *     match=true,
+     *     message="Le lastName doit être au format: Marc,marc ou Marc-Alban pas de caractères spéciaux autorisés…"
+     * )
      * @Assert\Length(
      *     min=3,
      *     max=15,
      *     minMessage="Le prénom doit contenir au minimum {{ limit }} caractères",
      *     maxMessage="Le prénom doit contenir au maximum {{ limit }} caractères"
      * )
-     * @Groups({"get:Customer:collection","post:Customer:collection","get:Customers:resellers"})
+     * @Groups({"get:Customer:collection","post:Customer:collection","get:Customers:resellers","put:Customers:resellers"})
      */
     private string $lastName;
 
@@ -187,7 +228,7 @@ class Customer
      *     match=true,
      *     message="L'email doit être au format: test@live.fr …"
      * )
-     * @Groups({"get:Customer:collection","post:Customer:collection","get:Customers:resellers"})
+     * @Groups({"get:Customer:collection","post:Customer:collection","get:Customers:resellers","put:Customers:resellers"})
      */
     private string $email;
 
@@ -297,5 +338,4 @@ class Customer
 
         return $this;
     }
-
 }
