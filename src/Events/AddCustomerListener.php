@@ -38,8 +38,8 @@ class AddCustomerListener implements EventSubscriberInterface
         $user = $this->security->getUser();
         $method = $event->getRequest()->getMethod();
         if ($user instanceof Admin && $method === Request::METHOD_POST) {
-            throw new Exception("Admin can't create customer",403);
-         }
+            throw new Exception("Admin can't create customer", 403);
+        }
         if ($user instanceof Reseller === true && $result instanceof Customer && $method === Request::METHOD_POST) {
             $result->setCustomersResellers($user);
         }
